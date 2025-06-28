@@ -129,8 +129,8 @@ const Index = () => {
       // Create the main pinned scroll trigger that controls the entire animation
       ScrollTrigger.create({
         trigger: featuresContainerRef.current,
-        start: "top top",
-        end: "bottom bottom", // Pin for the entire section height
+        start: "center center", // Pin when cards are centered
+        end: "bottom bottom",
         pin: true, // 🔒 PIN THE SECTION - This prevents scrolling past
         scrub: 1,
         onUpdate: (self) => {
@@ -291,53 +291,56 @@ const Index = () => {
       </div>
 
       {/* Features Card Stack Section - PINNED SCROLLING */}
-      <div ref={featuresContainerRef} className="relative z-30 h-[300vh] py-32">
-        <div className="w-full max-w-7xl mx-auto px-8 h-screen flex flex-col justify-center">
-          {/* Section Title */}
-          <div className="text-left mb-32 ml-8">
-            <h2 className="text-6xl md:text-8xl font-bold text-white mb-8">
-              Features
-            </h2>
-            <p className="text-xl text-white/70">
-              Powerful tools for creative expression
-            </p>
-          </div>
+      <div ref={featuresContainerRef} className="relative z-30 h-[400vh]">
+        {/* Title positioned absolutely to not interfere with card positioning */}
+        <div className="absolute top-32 left-8 z-40">
+          <h2 className="text-6xl md:text-8xl font-bold text-white mb-8">
+            Features
+          </h2>
+          <p className="text-xl text-white/70">
+            Powerful tools for creative expression
+          </p>
+        </div>
 
-          {/* Card Stack Container */}
-          <div className="flex justify-start pl-8">
-            <div className="relative w-full max-w-7xl">
-              {featureData.map((feature, index) => (
-                <div
-                  key={feature.number}
-                  ref={addToFeatureRefs}
-                  className="absolute w-80 h-96 bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl overflow-hidden rounded-lg"
-                >
-                  {/* Subtle gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+        {/* Card Stack Container - Centered in viewport */}
+        <div className="h-screen flex items-center justify-center">
+          <div className="relative">
+            {featureData.map((feature, index) => (
+              <div
+                key={feature.number}
+                ref={addToFeatureRefs}
+                className="absolute w-80 h-96 bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl overflow-hidden rounded-lg"
+                style={{
+                  // Center the stack by offsetting by half the card width
+                  left: '-160px', // Half of card width (320px / 2)
+                  top: '-192px'   // Half of card height (384px / 2)
+                }}
+              >
+                {/* Subtle gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
 
-                  {/* Feature number */}
-                  <div className="absolute top-6 left-6 z-10">
-                    <span className="text-6xl font-bold text-white/40 leading-none">{feature.number}</span>
-                  </div>
-
-                  {/* Feature content */}
-                  <div className="absolute bottom-6 left-6 right-6 z-10">
-                    <h3 className="text-2xl font-bold text-white mb-2">{feature.title}</h3>
-                    <p className="text-lg text-white/80 mb-3">{feature.subtitle}</p>
-                    <p className="text-sm text-white/60 leading-relaxed">{feature.description}</p>
-                  </div>
-
-                  {/* Decorative border */}
-                  <div className="absolute inset-3 border border-white/10 pointer-events-none z-10 rounded" />
-
-                  {/* Animated border elements */}
-                  <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
-                  <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-transparent via-white/30 to-transparent"></div>
-                  <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
-                  <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-t from-transparent via-white/30 to-transparent"></div>
+                {/* Feature number */}
+                <div className="absolute top-6 left-6 z-10">
+                  <span className="text-6xl font-bold text-white/40 leading-none">{feature.number}</span>
                 </div>
-              ))}
-            </div>
+
+                {/* Feature content */}
+                <div className="absolute bottom-6 left-6 right-6 z-10">
+                  <h3 className="text-2xl font-bold text-white mb-2">{feature.title}</h3>
+                  <p className="text-lg text-white/80 mb-3">{feature.subtitle}</p>
+                  <p className="text-sm text-white/60 leading-relaxed">{feature.description}</p>
+                </div>
+
+                {/* Decorative border */}
+                <div className="absolute inset-3 border border-white/10 pointer-events-none z-10 rounded" />
+
+                {/* Animated border elements */}
+                <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+                <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-transparent via-white/30 to-transparent"></div>
+                <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
+                <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-t from-transparent via-white/30 to-transparent"></div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
