@@ -99,50 +99,52 @@ const Index = () => {
       }
     );
 
-    // Card stack animation
+    // Card stack animation - Fixed to start from left and stack upward
     const cards = featureCardsRef.current;
     if (cards.length) {
-      const STACK_OFFSET_X = 50;
-      const STACK_OFFSET_Y = 50;
+      // Cards stack upward (negative Y offset) and slightly to the right
+      const STACK_OFFSET_X = 30; // Small right offset
+      const STACK_OFFSET_Y = -40; // Negative for upward stacking
 
-      // Set initial position for first card (leftmost position)
+      // Set initial position for first card (bottom-left position)
       gsap.set(cards[0], {
         x: 0,
         y: 0,
         scale: 1,
-        zIndex: 5,
+        zIndex: 1,
         opacity: 1,
         rotation: 0,
       });
 
       // Hide other cards initially and position them off-screen from the right
       gsap.set(cards.slice(1), {
-        x: 600,
-        y: -100,
-        scale: 0.9,
+        x: 800, // Start from far right
+        y: 200, // Start from below
+        scale: 0.8,
         opacity: 0,
-        rotation: 5,
-        zIndex: (i) => 4 - i,
+        rotation: 8,
+        zIndex: (i) => i + 2,
       });
 
       // Create sequential animations for each card
       cards.forEach((card, index) => {
         if (index === 0) return;
 
+        // Calculate final stacked position (upward stacking from left)
         const finalX = index * STACK_OFFSET_X;
-        const finalY = index * STACK_OFFSET_Y;
+        const finalY = index * STACK_OFFSET_Y; // Negative values stack upward
 
         ScrollTrigger.create({
           trigger: featuresContainerRef.current,
-          start: `top+=${index * 150} center`,
-          end: `top+=${index * 150 + 200} center`,
-          scrub: 1,
+          start: `top+=${index * 200} center`,
+          end: `top+=${index * 200 + 300} center`,
+          scrub: 1.5,
           animation: gsap.timeline()
             .fromTo(card, {
-              x: 600,
-              y: -100,
-              rotation: 5,
-              scale: 0.9,
+              x: 800,
+              y: 200,
+              rotation: 8,
+              scale: 0.8,
               opacity: 0,
             }, {
               x: finalX,
@@ -272,10 +274,10 @@ const Index = () => {
       </div>
 
       {/* Features Card Stack Section */}
-      <div ref={featuresContainerRef} className="relative z-30 min-h-screen flex items-center justify-center py-20">
+      <div ref={featuresContainerRef} className="relative z-30 min-h-[150vh] py-32">
         <div className="w-full max-w-7xl mx-auto px-8">
           {/* Section Title */}
-          <div className="text-center mb-20">
+          <div className="text-left mb-32 ml-8">
             <h2 className="text-6xl md:text-8xl font-bold text-white mb-8">
               Features
             </h2>
@@ -284,8 +286,8 @@ const Index = () => {
             </p>
           </div>
 
-          {/* Card Stack Container */}
-          <div className="flex justify-center">
+          {/* Card Stack Container - Positioned to start from left */}
+          <div className="flex justify-start pl-8">
             <div className="relative w-fit">
               {featureData.map((feature, index) => (
                 <div
