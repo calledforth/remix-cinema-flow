@@ -104,8 +104,8 @@ const Index = () => {
     const cards = featureCardsRef.current;
     if (cards.length) {
       const totalCards = cards.length;
-      const STACK_OFFSET_X = 80; // Horizontal spacing between cards
-      const STACK_OFFSET_Y = 30;  // Vertical spacing (downward stacking)
+      const STACK_OFFSET_X = 120; // Horizontal spacing between cards (top-left to bottom-right)
+      const STACK_OFFSET_Y = 80;  // Vertical spacing (downward stacking)
 
       // Set initial position for first card (bottom layer) - TOP LEFT position
       gsap.set(cards[0], {
@@ -119,11 +119,11 @@ const Index = () => {
 
       // Hide other cards initially - they come from off-screen right
       gsap.set(cards.slice(1), {
-        x: 800,
-        y: -100,
-        scale: 0.9,
+        x: 1000,
+        y: -200,
+        scale: 0.8,
         opacity: 0,
-        rotation: 5,
+        rotation: 8,
         zIndex: (i) => i + 2,
       });
 
@@ -153,11 +153,11 @@ const Index = () => {
               const finalY = index * STACK_OFFSET_Y;
 
               gsap.set(card, {
-                x: gsap.utils.interpolate(800, finalX, localProgress),
-                y: gsap.utils.interpolate(-100, finalY, localProgress),
-                scale: gsap.utils.interpolate(0.9, 1, localProgress),
+                x: gsap.utils.interpolate(1000, finalX, localProgress),
+                y: gsap.utils.interpolate(-200, finalY, localProgress),
+                scale: gsap.utils.interpolate(0.8, 1, localProgress),
                 opacity: gsap.utils.interpolate(0, 1, localProgress),
-                rotation: gsap.utils.interpolate(5, 0, localProgress),
+                rotation: gsap.utils.interpolate(8, 0, localProgress),
               });
             } else if (progress > cardEnd) {
               // Card animation is complete - set final position
@@ -291,19 +291,17 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Features Section with Title */}
-      <div className="relative z-30 min-h-screen flex items-center justify-center px-8">
+      {/* Features Section with Title - REDUCED SPACING */}
+      <div className="relative z-30 py-16 px-8">
         <div className="max-w-7xl mx-auto w-full">
-          <div className="mb-16">
-            <h2 className="text-6xl md:text-8xl font-bold text-white">Features</h2>
-            <p className="text-xl text-white/70 mt-4">Powerful tools for creative expression</p>
-          </div>
+          <h2 className="text-6xl md:text-8xl font-bold text-white mb-4">Features</h2>
+          <p className="text-xl text-white/70">Powerful tools for creative expression</p>
         </div>
       </div>
 
       {/* Features Card Stack Section - PINNED SCROLLING */}
       <div ref={featuresContainerRef} className="relative z-30 h-[400vh]">
-        <div className="w-full h-screen flex items-center justify-start px-8">
+        <div className="w-full h-screen flex items-start justify-start pt-16 pl-16">
           {/* Card Stack Container - Positioned TOP LEFT */}
           <div className="relative">
             {featureData.map((feature, index) => (
