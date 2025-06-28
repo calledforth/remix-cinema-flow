@@ -307,8 +307,8 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Features Section with Title - REDUCED SPACING */}
-      <div className="relative z-30 py-16 px-8">
+      {/* Features Section with Title - MINIMAL SPACING */}
+      <div className="relative z-30 py-8 px-8">
         <div className="max-w-7xl mx-auto w-full">
           <h2 className="text-6xl md:text-8xl font-bold text-white mb-4">Features</h2>
           <p className="text-xl text-white/70">Powerful tools for creative expression</p>
@@ -316,7 +316,7 @@ const Index = () => {
       </div>
 
       {/* Features Card Stack Section - PINNED SCROLLING */}
-      <div ref={featuresContainerRef} className="relative z-30 h-[400vh]">
+      <div ref={featuresContainerRef} className="relative z-30 h-[300vh]">
         <div className="w-full h-screen flex items-start justify-between pt-24 px-16">
           {/* Card Stack Container - Positioned TOP LEFT (slightly lower) */}
           <div className="relative">
@@ -353,38 +353,35 @@ const Index = () => {
             ))}
           </div>
 
-          {/* Completion Text - Appears on the right after animation */}
+          {/* Completion Text - Styled like rest of app (white, italics, no colors) */}
           <div ref={completionTextRef} className="max-w-md pt-16">
-            <h3 className="text-4xl font-bold text-white mb-6">
-              The Complete<br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-                Solution
-              </span>
+            <h3 className="text-4xl font-bold text-white mb-6 italic">
+              The Complete Solution
             </h3>
-            <p className="text-lg text-white/80 leading-relaxed mb-8">
+            <p className="text-lg text-white/80 leading-relaxed mb-8 italic">
               Everything you need to transform your creative vision into reality. 
               From AI-powered tools to seamless collaboration, we've built the 
               ultimate platform for digital artists and creators.
             </p>
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                <span className="text-white/70">5 powerful AI tools</span>
+                <div className="w-2 h-2 bg-white/40 rounded-full"></div>
+                <span className="text-white/70 italic">5 powerful AI tools</span>
               </div>
               <div className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
-                <span className="text-white/70">Real-time collaboration</span>
+                <div className="w-2 h-2 bg-white/40 rounded-full"></div>
+                <span className="text-white/70 italic">Real-time collaboration</span>
               </div>
               <div className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                <span className="text-white/70">Cloud-based rendering</span>
+                <div className="w-2 h-2 bg-white/40 rounded-full"></div>
+                <span className="text-white/70 italic">Cloud-based rendering</span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Top Remixes Section - REMOVED EXTRA SPACING */}
+      {/* Top Remixes Section - DIRECTLY AFTER FEATURES */}
       <div ref={topRemixesRef} className="relative z-30 min-h-screen text-white flex items-center justify-center p-8 bg-black/20 backdrop-blur-lg">
         <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           {/* Grid of images */}
