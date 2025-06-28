@@ -382,7 +382,7 @@ const Index = () => {
       </div>
 
       {/* Top Remixes Section - DIRECTLY AFTER FEATURES */}
-      <div ref={topRemixesRef} className="relative z-30 min-h-screen text-white flex items-center justify-center p-8 bg-black/20 backdrop-blur-lg">
+      <div ref={topRemixesRef} className="relative z-30 text-white flex items-center justify-center p-8 bg-black/20 backdrop-blur-lg">
         <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           {/* Grid of images */}
           <div className="grid grid-cols-2 gap-4">
