@@ -292,7 +292,7 @@ const Index = () => {
       </div>
 
       {/* Features Section with Title */}
-      <div className="relative z-30 min-h-screen flex items-center justify-center px-8 py-32">
+      <div className="relative z-30 min-h-screen flex items-center justify-center px-8">
         <div className="max-w-7xl mx-auto w-full">
           <div className="mb-16">
             <h2 className="text-6xl md:text-8xl font-bold text-white">Features</h2>
@@ -302,7 +302,7 @@ const Index = () => {
       </div>
 
       {/* Features Card Stack Section - PINNED SCROLLING */}
-      <div ref={featuresContainerRef} className="relative z-30">
+      <div ref={featuresContainerRef} className="relative z-30 h-[400vh]">
         <div className="w-full h-screen flex items-center justify-start px-8">
           {/* Card Stack Container - Positioned TOP LEFT */}
           <div className="relative">
