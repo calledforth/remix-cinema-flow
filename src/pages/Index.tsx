@@ -294,6 +294,14 @@ const Index = () => {
       <div ref={featuresContainerRef} className="relative z-30 h-[300vh] py-32">
         <div className="w-full max-w-7xl mx-auto px-8 h-screen flex flex-col justify-center">
           {/* {/* Section Title */}
+          <div className="text-left mb-32 ml-8">
+            <h2 className="text-6xl md:text-8xl font-bold text-white mb-8">
+              Features
+            </h2>
+            <p className="text-xl text-white/70">
+              Powerful tools for creative expression
+            </p>
+          </div>
 
 
           {/* Card Stack Container */}
