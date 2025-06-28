@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -14,6 +13,13 @@ const Index = () => {
   const featuresRef = useRef<HTMLDivElement>(null);
   const aboutRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLElement>(null);
+
+  const remixImages = [
+    '/assets/download (1).jpg',
+    '/assets/carlhauser-vGiJ-tW3tZ4-unsplash.jpg',
+    '/assets/cor.jpeg',
+    '/assets/car.jpeg'
+  ];
 
   useEffect(() => {
     // Enable smooth scrolling
@@ -31,11 +37,6 @@ const Index = () => {
 
     // Fade out hero title and fade in nav
     heroTimeline
-      .to(titleRef.current, {
-        opacity: 0,
-        y: -100,
-        duration: 1,
-      })
       .to(navRef.current, {
         opacity: 1,
         duration: 0.5,
@@ -57,23 +58,9 @@ const Index = () => {
       }
     );
 
-    // Hide tagline and show features
-    gsap.to(taglineRef.current, {
-      opacity: 0,
-      y: -50,
-      duration: 1,
-      scrollTrigger: {
-        trigger: featuresRef.current,
-        start: "top 100%",
-        end: "top 80%",
-        scrub: 1,
-      }
-    });
-
     gsap.fromTo(featuresRef.current, 
-      { opacity: 0, y: 100 },
+      { y: 100 },
       {
-        opacity: 1,
         y: 0,
         duration: 1,
         scrollTrigger: {
@@ -135,18 +122,20 @@ const Index = () => {
       {/* Navigation - Initially Hidden */}
       <nav 
         ref={navRef}
-        className="fixed top-0 left-0 right-0 z-50 p-6 bg-black/10 backdrop-blur-sm opacity-0"
+        className="fixed top-0 left-0 right-0 z-50 p-4 bg-black/10 backdrop-blur-sm opacity-0"
       >
         <div className="flex justify-between items-center max-w-7xl mx-auto">
-          <div className="text-white font-bold text-xl">remix.</div>
-          <div className="hidden md:flex space-x-8 text-white/80">
-            <a href="#about" className="hover:text-white transition-colors">about</a>
-            <a href="#features" className="hover:text-white transition-colors">features</a>
-            <a href="#contact" className="hover:text-white transition-colors">contact</a>
+          <div className="flex items-center space-x-8">
+            <div className="text-white font-bold text-xl">remix.</div>
+            <div className="hidden md:flex space-x-8 text-white/80">
+              <a href="#about" className="hover:text-white transition-colors">about</a>
+              <a href="#features" className="hover:text-white transition-colors">features</a>
+              <a href="#contact" className="hover:text-white transition-colors">contact</a>
+            </div>
           </div>
           <Link 
             to="/studio"
-            className="bg-white text-black px-6 py-2 rounded-full font-medium hover:bg-black hover:text-white transition-all duration-300"
+            className="bg-white text-black px-6 py-2 rounded-none font-medium hover:bg-black hover:text-white transition-all duration-300"
           >
             start remixing
           </Link>
@@ -155,12 +144,12 @@ const Index = () => {
 
       {/* Hero Section */}
       <div ref={heroRef} className="relative h-screen flex items-center justify-center">
-        <div className="text-center z-10">
+        <div className="text-center z-10 w-full px-8">
           <h1 
             ref={titleRef}
-            className="text-[12rem] md:text-[16rem] lg:text-[20rem] font-bold text-transparent bg-clip-text bg-gradient-to-b from-white/90 to-white/50 leading-none mb-4"
+            className="text-[12rem] md:text-[16rem] lg:text-[20rem] font-bold text-transparent leading-none mb-4"
             style={{
-              WebkitTextStroke: '2px rgba(255, 255, 255, 0.8)'
+              WebkitTextStroke: '1px white'
             }}
           >
             remix.
@@ -171,42 +160,57 @@ const Index = () => {
       {/* Tagline Section */}
       <div 
         ref={taglineRef}
-        className="relative z-30 min-h-screen flex items-center justify-center px-8"
+        className="relative z-30 min-h-screen flex items-end justify-start p-8 md:p-16"
       >
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-4xl md:text-6xl font-bold text-white/90 tracking-wide font-serif leading-relaxed">
-            Transform the ordinary into the extraordinary.
+        <div className="max-w-4xl text-left">
+          <p className="text-4xl md:text-6xl font-bold text-white/90 tracking-wide uppercase leading-tight">
+            Transform the ordinary<br/>into the extraordinary.
           </p>
-          <p className="text-xl md:text-2xl text-white/70 mt-8 font-serif">
+          <p className="text-xl md:text-2xl text-white/70 mt-4 uppercase">
             Your world, reimagined with AI.
           </p>
         </div>
       </div>
 
-      {/* Features Section */}
-      <div ref={featuresRef} className="relative z-30 min-h-screen flex items-center justify-center px-8">
-        <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-6xl md:text-8xl font-bold text-white mb-12">
-            Features
-          </h2>
-          <div className="grid md:grid-cols-3 gap-12">
-            <div className="bg-white/10 backdrop-blur-sm p-8 rounded-lg">
-              <h3 className="text-2xl font-bold text-white mb-4">AI-Powered Creation</h3>
-              <p className="text-white/80">
-                Harness the power of artificial intelligence to transform your creative process and bring your wildest ideas to life.
-              </p>
+      {/* Top Remixes Section */}
+      <div ref={featuresRef} className="relative z-30 min-h-screen text-white flex items-center justify-center p-8 bg-black/20 backdrop-blur-lg">
+        <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          {/* Grid of images */}
+          <div className="grid grid-cols-2 gap-4">
+            {remixImages.map((src, i) => (
+              <div 
+                key={i}
+                className="relative aspect-square rounded-lg overflow-hidden group bg-black"
+              >
+                <img src={src} alt={`Remix ${i + 1}`} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors"></div>
+                <div className="absolute top-2 left-2 bg-black/50 text-white px-2 py-1 text-xs rounded">@remixer</div>
+                <div className="absolute bottom-2 right-2 bg-black/50 text-white px-2 py-1 text-xs rounded">1.2M views</div>
+              </div>
+            ))}
+          </div>
+          {/* Text content */}
+          <div className="flex flex-col justify-between h-full">
+            <div>
+              <div className="flex justify-between items-start mb-8">
+                <h2 className="text-6xl font-bold uppercase leading-none">
+                  Top<br />Remixes
+                </h2>
+                <p className="text-4xl font-bold">24</p>
+              </div>
+              <a href="#" className="group inline-flex items-center border-b border-neutral-400 pb-1">
+                <span>CHECK ALL</span>
+                <span className="ml-4 transition-transform duration-300 group-hover:translate-x-2">&rarr;</span>
+              </a>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm p-8 rounded-lg">
-              <h3 className="text-2xl font-bold text-white mb-4">Cinematic Quality</h3>
-              <p className="text-white/80">
-                Create stunning visuals with professional-grade tools that deliver cinematic quality results every time.
-              </p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm p-8 rounded-lg">
-              <h3 className="text-2xl font-bold text-white mb-4">Boundary-Pushing</h3>
-              <p className="text-white/80">
-                Push the boundaries of what's possible with cutting-edge technology that redefines creative expression.
-              </p>
+            <div className="text-right">
+              <p className="uppercase text-sm">Our Merch</p>
+              {/* Placeholder for merch images */}
+              <div className="flex justify-end space-x-2 mt-2">
+                <div className="w-12 h-12 bg-neutral-800"></div>
+                <div className="w-12 h-12 bg-neutral-800"></div>
+                <div className="w-12 h-12 bg-neutral-800"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -237,7 +241,7 @@ const Index = () => {
       </div>
 
       {/* Footer */}
-      <footer ref={footerRef} className="relative z-30 bg-black/50 backdrop-blur-sm py-16 px-8">
+      <footer ref={footerRef} className="relative z-30 bg-black/80 backdrop-blur-sm py-16 px-8">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
