@@ -279,26 +279,44 @@ const Index = () => {
         <div className="absolute inset-0 bg-black/30"></div>
       </div>
 
-      {/* Navigation - Initially Hidden */}
+      {/* Navigation - COMPLETELY TRANSPARENT */}
       <nav 
         ref={navRef}
-        className="fixed top-0 left-0 right-0 z-50 p-4 bg-black/10 backdrop-blur-sm opacity-0"
+        className="fixed top-0 left-0 right-0 z-50 p-6 opacity-0"
       >
         <div className="flex justify-between items-center max-w-7xl mx-auto">
+          {/* Left side - Only title */}
+          <div className="text-white font-bold text-xl">remix.</div>
+          
+          {/* Right side - All other elements */}
           <div className="flex items-center space-x-8">
-            <div className="text-white font-bold text-xl">remix.</div>
             <div className="hidden md:flex space-x-8 text-white/80">
               <a href="#about" className="hover:text-white transition-colors">about</a>
               <a href="#features" className="hover:text-white transition-colors">features</a>
               <a href="#contact" className="hover:text-white transition-colors">contact</a>
             </div>
+            
+            {/* Glass Blur Button - Same style as feature cards */}
+            <Link 
+              to="/studio"
+              className="relative bg-white/10 backdrop-blur-md border border-white/20 text-white px-6 py-3 font-medium hover:bg-white/20 transition-all duration-300 overflow-hidden group"
+            >
+              {/* Subtle gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+              
+              {/* Button text */}
+              <span className="relative z-10">start remixing</span>
+              
+              {/* Decorative border */}
+              <div className="absolute inset-1 border border-white/10 pointer-events-none z-10" />
+              
+              {/* Animated border elements */}
+              <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+              <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-transparent via-white/30 to-transparent"></div>
+              <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
+              <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-t from-transparent via-white/30 to-transparent"></div>
+            </Link>
           </div>
-          <Link 
-            to="/studio"
-            className="bg-white text-black px-6 py-2 rounded-none font-medium hover:bg-black hover:text-white transition-all duration-300"
-          >
-            start remixing
-          </Link>
         </div>
       </nav>
 
