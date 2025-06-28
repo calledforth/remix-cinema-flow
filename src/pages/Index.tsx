@@ -103,7 +103,7 @@ const Index = () => {
     const cards = featureCardsRef.current;
     if (cards.length) {
       const totalCards = cards.length;
-      const STACK_OFFSET_X = 100; // Horizontal spacing between cards
+      const STACK_OFFSET_X = 200; // Horizontal spacing between cards
       const STACK_OFFSET_Y = 60;  // Vertical spacing (downward stacking)
 
       // Set initial position for first card (bottom layer)
