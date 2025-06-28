@@ -13,6 +13,7 @@ const Index = () => {
   const featuresContainerRef = useRef<HTMLDivElement>(null);
   const featureCardsRef = useRef<HTMLDivElement[]>([]);
   const featuresTitleRef = useRef<HTMLDivElement>(null);
+  const completionTextRef = useRef<HTMLDivElement>(null);
   const topRemixesRef = useRef<HTMLDivElement>(null);
   const aboutRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLElement>(null);
@@ -127,6 +128,12 @@ const Index = () => {
         zIndex: (i) => i + 2,
       });
 
+      // Hide completion text initially
+      gsap.set(completionTextRef.current, {
+        opacity: 0,
+        x: 50,
+      });
+
       // Create the main pinned scroll trigger that controls the entire animation
       ScrollTrigger.create({
         trigger: featuresContainerRef.current,
@@ -173,6 +180,15 @@ const Index = () => {
               });
             }
           });
+
+          // Show completion text when animation is 80% complete
+          if (progress > 0.8) {
+            gsap.to(completionTextRef.current, {
+              opacity: 1,
+              x: 0,
+              duration: 0.5,
+            });
+          }
         }
       });
     }
@@ -301,8 +317,8 @@ const Index = () => {
 
       {/* Features Card Stack Section - PINNED SCROLLING */}
       <div ref={featuresContainerRef} className="relative z-30 h-[400vh]">
-        <div className="w-full h-screen flex items-start justify-start pt-16 pl-16">
-          {/* Card Stack Container - Positioned TOP LEFT */}
+        <div className="w-full h-screen flex items-start justify-between pt-24 px-16">
+          {/* Card Stack Container - Positioned TOP LEFT (slightly lower) */}
           <div className="relative">
             {featureData.map((feature, index) => (
               <div
@@ -336,10 +352,39 @@ const Index = () => {
               </div>
             ))}
           </div>
+
+          {/* Completion Text - Appears on the right after animation */}
+          <div ref={completionTextRef} className="max-w-md pt-16">
+            <h3 className="text-4xl font-bold text-white mb-6">
+              The Complete<br/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                Solution
+              </span>
+            </h3>
+            <p className="text-lg text-white/80 leading-relaxed mb-8">
+              Everything you need to transform your creative vision into reality. 
+              From AI-powered tools to seamless collaboration, we've built the 
+              ultimate platform for digital artists and creators.
+            </p>
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3">
+                <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                <span className="text-white/70">5 powerful AI tools</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
+                <span className="text-white/70">Real-time collaboration</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                <span className="text-white/70">Cloud-based rendering</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Top Remixes Section */}
+      {/* Top Remixes Section - REMOVED EXTRA SPACING */}
       <div ref={topRemixesRef} className="relative z-30 min-h-screen text-white flex items-center justify-center p-8 bg-black/20 backdrop-blur-lg">
         <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           {/* Grid of images */}
