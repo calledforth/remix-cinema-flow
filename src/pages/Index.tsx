@@ -12,6 +12,7 @@ const Index = () => {
   const taglineRef = useRef<HTMLDivElement>(null);
   const featuresContainerRef = useRef<HTMLDivElement>(null);
   const featureCardsRef = useRef<HTMLDivElement[]>([]);
+  const featuresTitleRef = useRef<HTMLDivElement>(null);
   const topRemixesRef = useRef<HTMLDivElement>(null);
   const aboutRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLElement>(null);
@@ -99,12 +100,28 @@ const Index = () => {
       }
     );
 
+    // Features title animation
+    gsap.fromTo(featuresTitleRef.current, 
+      { opacity: 0, y: 100 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        scrollTrigger: {
+          trigger: featuresContainerRef.current,
+          start: "top 80%",
+          end: "top 50%",
+          scrub: 1,
+        }
+      }
+    );
+
     // PINNED CARD STACK ANIMATION - Scroll locks until animation completes
     const cards = featureCardsRef.current;
     if (cards.length) {
       const totalCards = cards.length;
-      const STACK_OFFSET_X = 150; // Horizontal spacing between cards
-      const STACK_OFFSET_Y = 60;  // Vertical spacing (downward stacking)
+      const STACK_OFFSET_X = 120; // Horizontal spacing between cards
+      const STACK_OFFSET_Y = 40;  // Vertical spacing (downward stacking)
 
       // Set initial position for first card (bottom layer)
       gsap.set(cards[0], {
@@ -118,11 +135,11 @@ const Index = () => {
 
       // Hide other cards initially
       gsap.set(cards.slice(1), {
-        x: 800,
-        y: -200,
-        scale: 0.8,
+        x: 600,
+        y: -150,
+        scale: 0.9,
         opacity: 0,
-        rotation: 8,
+        rotation: 5,
         zIndex: (i) => i + 2,
       });
 
@@ -152,11 +169,11 @@ const Index = () => {
               const finalY = index * STACK_OFFSET_Y;
 
               gsap.set(card, {
-                x: gsap.utils.interpolate(800, finalX, localProgress),
-                y: gsap.utils.interpolate(-200, finalY, localProgress),
-                scale: gsap.utils.interpolate(0.8, 1, localProgress),
+                x: gsap.utils.interpolate(600, finalX, localProgress),
+                y: gsap.utils.interpolate(-150, finalY, localProgress),
+                scale: gsap.utils.interpolate(0.9, 1, localProgress),
                 opacity: gsap.utils.interpolate(0, 1, localProgress),
-                rotation: gsap.utils.interpolate(8, 0, localProgress),
+                rotation: gsap.utils.interpolate(5, 0, localProgress),
               });
             } else if (progress > cardEnd) {
               // Card animation is complete - set final position
@@ -293,12 +310,15 @@ const Index = () => {
       {/* Features Card Stack Section - PINNED SCROLLING */}
       <div ref={featuresContainerRef} className="relative z-30 h-[300vh] py-32">
         <div className="w-full max-w-7xl mx-auto px-8 h-screen flex flex-col justify-center">
-          {/* {/* Section Title */}
+          {/* Features Title */}
+          <div ref={featuresTitleRef} className="mb-16">
+            <h2 className="text-6xl md:text-8xl font-bold text-white">Features</h2>
+            <p className="text-xl text-white/70 mt-4">Powerful tools for creative expression</p>
+          </div>
 
-
-          {/* Card Stack Container */}
-          <div className="flex justify-start pl-8">
-            <div className="relative w-full max-w-7xl">
+          {/* Card Stack Container - Positioned center-right */}
+          <div className="flex justify-center items-center">
+            <div className="relative w-full max-w-4xl flex justify-center">
               {featureData.map((feature, index) => (
                 <div
                   key={feature.number}
