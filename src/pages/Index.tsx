@@ -99,18 +99,18 @@ const Index = () => {
       }
     );
 
-    // Card stack animation - FIXED: New cards appear on top
+    // Card stack animation - ENHANCED: Better spacing and longer focus
     const cards = featureCardsRef.current;
     if (cards.length) {
-      // Dynamic spacing calculation
+      // INCREASED spacing for better card visibility
       const totalCards = cards.length;
-      const containerWidth = window.innerWidth * 0.8; // 80% of viewport width
+      const containerWidth = window.innerWidth * 0.9; // Increased to 90% of viewport width
       const cardWidth = 320; // 80 * 4 = 320px
       const availableSpace = containerWidth - cardWidth;
       
-      // Calculate dynamic offsets to fill space evenly
-      const STACK_OFFSET_X = Math.min(60, availableSpace / (totalCards - 1)); // Max 60px, but adjust based on space
-      const STACK_OFFSET_Y = 40; // POSITIVE for downward stacking
+      // INCREASED offsets for more card visibility
+      const STACK_OFFSET_X = Math.min(100, availableSpace / (totalCards - 1)); // Increased from 60px to 100px
+      const STACK_OFFSET_Y = 60; // Increased from 40px to 60px for better visibility
 
       // Set initial position for first card (bottom layer)
       gsap.set(cards[0], {
@@ -132,7 +132,7 @@ const Index = () => {
         zIndex: (i) => i + 2, // INCREASING z-index so new cards appear on top
       });
 
-      // Create sequential animations for each card
+      // Create sequential animations for each card with EXTENDED scroll range
       cards.forEach((card, index) => {
         if (index === 0) return;
 
@@ -142,9 +142,9 @@ const Index = () => {
 
         ScrollTrigger.create({
           trigger: featuresContainerRef.current,
-          start: `top+=${index * 200} center`,
-          end: `top+=${index * 200 + 300} center`,
-          scrub: 1.5,
+          start: `top+=${index * 300} center`, // INCREASED from 200 to 300 for slower progression
+          end: `top+=${index * 300 + 500} center`, // INCREASED from 300 to 500 for longer animation
+          scrub: 2, // INCREASED from 1.5 to 2 for smoother, slower animation
           animation: gsap.timeline()
             .fromTo(card, {
               x: 800,
@@ -279,8 +279,8 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Features Card Stack Section */}
-      <div ref={featuresContainerRef} className="relative z-30 min-h-[150vh] py-32">
+      {/* Features Card Stack Section - EXTENDED height for longer focus */}
+      <div ref={featuresContainerRef} className="relative z-30 min-h-[200vh] py-32">
         <div className="w-full max-w-7xl mx-auto px-8">
           {/* Section Title */}
           <div className="text-left mb-32 ml-8">
@@ -292,9 +292,9 @@ const Index = () => {
             </p>
           </div>
 
-          {/* Card Stack Container - Dynamic width to fill space evenly */}
+          {/* Card Stack Container - INCREASED width for better spacing */}
           <div className="flex justify-start pl-8">
-            <div className="relative w-full max-w-6xl">
+            <div className="relative w-full max-w-7xl">
               {featureData.map((feature, index) => (
                 <div
                   key={feature.number}
