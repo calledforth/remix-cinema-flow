@@ -10,7 +10,7 @@ const Index = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const taglineRef = useRef<HTMLParagraphElement>(null);
-  const navRef = useRef<HTMLNavElement>(null);
+  const navRef = useRef<HTMLElement>(null);
   const marketingRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -48,10 +48,14 @@ const Index = () => {
 
   return (
     <div className="relative min-h-[200vh] overflow-hidden">
-      {/* Animated Background */}
-      <div className="fixed inset-0 bg-gradient-to-br from-purple-600 via-blue-600 to-pink-600">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-400/30 via-transparent to-blue-400/30 animate-pulse"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-pink-400/20 to-transparent"></div>
+      {/* Background with uploaded holographic image */}
+      <div 
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url('/lovable-uploads/54af5b33-165e-4144-988d-42992d217f0a.png')`
+        }}
+      >
+        <div className="absolute inset-0 bg-black/20"></div>
       </div>
 
       {/* Navigation - Initially Hidden */}
@@ -82,8 +86,7 @@ const Index = () => {
             ref={titleRef}
             className="text-[12rem] md:text-[16rem] lg:text-[20rem] font-bold text-transparent bg-clip-text bg-gradient-to-b from-white/90 to-white/50 leading-none mb-4"
             style={{
-              WebkitTextStroke: '2px rgba(255, 255, 255, 0.8)',
-              textStroke: '2px rgba(255, 255, 255, 0.8)'
+              WebkitTextStroke: '2px rgba(255, 255, 255, 0.8)'
             }}
           >
             remix.
