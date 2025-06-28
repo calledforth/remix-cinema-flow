@@ -9,19 +9,18 @@ gsap.registerPlugin(ScrollTrigger);
 const Index = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const taglineRef = useRef<HTMLParagraphElement>(null);
   const navRef = useRef<HTMLElement>(null);
-  const marketingRef = useRef<HTMLDivElement>(null);
+  const taglineRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
   const aboutRef = useRef<HTMLDivElement>(null);
-  const finalCtaRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    // Smooth scrolling for the entire page
+    // Enable smooth scrolling
     gsap.registerPlugin(ScrollTrigger);
     
     // Main hero transformation timeline
-    const tl = gsap.timeline({
+    const heroTimeline = gsap.timeline({
       scrollTrigger: {
         trigger: heroRef.current,
         start: "top top",
@@ -30,25 +29,47 @@ const Index = () => {
       }
     });
 
-    // Fade out and move up hero elements
-    tl.to([titleRef.current, taglineRef.current], {
-      opacity: 0,
-      y: -100,
-      duration: 1,
-    })
-    // Fade in navigation
-    .to(navRef.current, {
-      opacity: 1,
-      duration: 0.5,
-    }, "-=0.5")
-    // Fade in marketing copy
-    .to(marketingRef.current, {
-      opacity: 1,
-      y: 0,
-      duration: 0.5,
-    }, "-=0.3");
+    // Fade out hero title and fade in nav
+    heroTimeline
+      .to(titleRef.current, {
+        opacity: 0,
+        y: -100,
+        duration: 1,
+      })
+      .to(navRef.current, {
+        opacity: 1,
+        duration: 0.5,
+      }, "-=0.5");
 
-    // Animate sections on scroll
+    // Show tagline section
+    gsap.fromTo(taglineRef.current, 
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        scrollTrigger: {
+          trigger: taglineRef.current,
+          start: "top 80%",
+          end: "bottom 60%",
+          scrub: 1,
+        }
+      }
+    );
+
+    // Hide tagline and show features
+    gsap.to(taglineRef.current, {
+      opacity: 0,
+      y: -50,
+      duration: 1,
+      scrollTrigger: {
+        trigger: featuresRef.current,
+        start: "top 100%",
+        end: "top 80%",
+        scrub: 1,
+      }
+    });
+
     gsap.fromTo(featuresRef.current, 
       { opacity: 0, y: 100 },
       {
@@ -79,15 +100,15 @@ const Index = () => {
       }
     );
 
-    gsap.fromTo(finalCtaRef.current, 
-      { opacity: 0, y: 100 },
+    gsap.fromTo(footerRef.current, 
+      { opacity: 0, y: 50 },
       {
         opacity: 1,
         y: 0,
         duration: 1,
         scrollTrigger: {
-          trigger: finalCtaRef.current,
-          start: "top 80%",
+          trigger: footerRef.current,
+          start: "top 90%",
           end: "bottom 20%",
           scrub: 1,
         }
@@ -144,25 +165,22 @@ const Index = () => {
           >
             remix.
           </h1>
-          <p 
-            ref={taglineRef}
-            className="text-2xl md:text-3xl font-bold text-white/90 tracking-wide"
-          >
-            Your world, reimagined with AI.
-          </p>
         </div>
       </div>
 
-      {/* Marketing Copy - Initially Hidden */}
+      {/* Tagline Section */}
       <div 
-        ref={marketingRef}
-        className="fixed bottom-8 left-8 z-40 opacity-0 translate-y-8 max-w-md"
+        ref={taglineRef}
+        className="relative z-30 min-h-screen flex items-center justify-center px-8"
       >
-        <p className="text-white font-serif text-lg leading-relaxed">
-          Transform the ordinary into the extraordinary. Our AI-powered platform 
-          reimagines your creative process, turning ideas into reality with 
-          unprecedented elegance and precision.
-        </p>
+        <div className="max-w-4xl mx-auto text-center">
+          <p className="text-4xl md:text-6xl font-bold text-white/90 tracking-wide font-serif leading-relaxed">
+            Transform the ordinary into the extraordinary.
+          </p>
+          <p className="text-xl md:text-2xl text-white/70 mt-8 font-serif">
+            Your world, reimagined with AI.
+          </p>
+        </div>
       </div>
 
       {/* Features Section */}
@@ -205,33 +223,21 @@ const Index = () => {
             Our platform blends ambient, techno, electro, and experimental elements to create 
             deep, cinematic, and boundary-pushing soundscapes.
           </p>
-          <p className="text-xl text-white/80 leading-relaxed">
+          <p className="text-xl text-white/80 leading-relaxed mb-12">
             Transform your creative process with AI-powered tools that understand the nuances 
             of artistic expression and help you craft experiences that resonate on a deeper level.
-          </p>
-        </div>
-      </div>
-
-      {/* Final CTA Section */}
-      <div ref={finalCtaRef} className="relative z-30 min-h-screen flex items-center justify-center px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-8xl md:text-[12rem] font-bold text-white mb-12">
-            Start Remixing
-          </h2>
-          <p className="text-2xl text-white/90 mb-12 leading-relaxed">
-            Ready to transform your world? Step into the future of creative expression.
           </p>
           <Link 
             to="/studio"
             className="inline-block bg-white text-black px-12 py-6 rounded-full text-xl font-bold hover:bg-black hover:text-white transition-all duration-300 transform hover:scale-105"
           >
-            Enter the Studio
+            Start Remixing
           </Link>
         </div>
       </div>
 
       {/* Footer */}
-      <footer className="relative z-30 bg-black/50 backdrop-blur-sm py-16 px-8">
+      <footer ref={footerRef} className="relative z-30 bg-black/50 backdrop-blur-sm py-16 px-8">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
