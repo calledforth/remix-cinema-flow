@@ -99,19 +99,25 @@ const Index = () => {
       }
     );
 
-    // Card stack animation - Fixed to start from left and stack upward
+    // Card stack animation - Fixed for DOWNWARD stacking and dynamic spacing
     const cards = featureCardsRef.current;
     if (cards.length) {
-      // Cards stack upward (negative Y offset) and slightly to the right
-      const STACK_OFFSET_X = 30; // Small right offset
-      const STACK_OFFSET_Y = -40; // Negative for upward stacking
+      // Dynamic spacing calculation
+      const totalCards = cards.length;
+      const containerWidth = window.innerWidth * 0.8; // 80% of viewport width
+      const cardWidth = 320; // 80 * 4 = 320px
+      const availableSpace = containerWidth - cardWidth;
+      
+      // Calculate dynamic offsets to fill space evenly
+      const STACK_OFFSET_X = Math.min(60, availableSpace / (totalCards - 1)); // Max 60px, but adjust based on space
+      const STACK_OFFSET_Y = 40; // POSITIVE for downward stacking
 
-      // Set initial position for first card (bottom-left position)
+      // Set initial position for first card (top-left position)
       gsap.set(cards[0], {
         x: 0,
         y: 0,
         scale: 1,
-        zIndex: 1,
+        zIndex: totalCards, // Highest z-index for bottom card
         opacity: 1,
         rotation: 0,
       });
@@ -119,20 +125,20 @@ const Index = () => {
       // Hide other cards initially and position them off-screen from the right
       gsap.set(cards.slice(1), {
         x: 800, // Start from far right
-        y: 200, // Start from below
+        y: -200, // Start from above
         scale: 0.8,
         opacity: 0,
         rotation: 8,
-        zIndex: (i) => i + 2,
+        zIndex: (i) => totalCards - i - 1, // Decreasing z-index so new cards appear on top
       });
 
       // Create sequential animations for each card
       cards.forEach((card, index) => {
         if (index === 0) return;
 
-        // Calculate final stacked position (upward stacking from left)
+        // Calculate final stacked position (DOWNWARD stacking from left)
         const finalX = index * STACK_OFFSET_X;
-        const finalY = index * STACK_OFFSET_Y; // Negative values stack upward
+        const finalY = index * STACK_OFFSET_Y; // POSITIVE values stack downward
 
         ScrollTrigger.create({
           trigger: featuresContainerRef.current,
@@ -142,7 +148,7 @@ const Index = () => {
           animation: gsap.timeline()
             .fromTo(card, {
               x: 800,
-              y: 200,
+              y: -200,
               rotation: 8,
               scale: 0.8,
               opacity: 0,
@@ -286,9 +292,9 @@ const Index = () => {
             </p>
           </div>
 
-          {/* Card Stack Container - Positioned to start from left */}
+          {/* Card Stack Container - Dynamic width to fill space evenly */}
           <div className="flex justify-start pl-8">
-            <div className="relative w-fit">
+            <div className="relative w-full max-w-6xl">
               {featureData.map((feature, index) => (
                 <div
                   key={feature.number}
