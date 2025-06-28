@@ -102,50 +102,59 @@ const Index = () => {
     // Card stack animation
     const cards = featureCardsRef.current;
     if (cards.length) {
-      const STACK_OFFSET_X = 60;
-      const STACK_OFFSET_Y = 60;
+      const STACK_OFFSET_X = 40; // Reduced offset for tighter stacking
+      const STACK_OFFSET_Y = 40;
 
-      // Set initial position for first card
+      // Set initial position for first card (leftmost position)
       gsap.set(cards[0], {
         x: 0,
         y: 0,
         scale: 1,
-        zIndex: 1,
+        zIndex: 5,
         opacity: 1,
         rotation: 0,
       });
 
-      // Hide other cards initially
+      // Hide other cards initially and position them off-screen from the right
       gsap.set(cards.slice(1), {
-        x: 600,
-        y: -300,
-        scale: 0.9,
+        x: 500, // Start from far right
+        y: -200, // Start from above
+        scale: 0.8,
         opacity: 0,
-        rotation: 8,
-        zIndex: (i) => i + 2,
+        rotation: 10,
+        zIndex: (i) => 4 - i, // Reverse z-index so later cards appear on top
       });
 
-      // Create staggered animations
+      // Create sequential animations for each card
       cards.forEach((card, index) => {
-        if (index === 0) return;
+        if (index === 0) return; // Skip first card as it's already visible
 
+        // Calculate final stacked position (each card slightly to the right and down)
         const finalX = index * STACK_OFFSET_X;
         const finalY = index * STACK_OFFSET_Y;
 
+        // Each card appears after the previous one with a delay
         ScrollTrigger.create({
           trigger: featuresContainerRef.current,
-          start: `top+=${index * 300} bottom`,
-          end: `top+=${index * 300 + 400} bottom`,
-          scrub: 1.5,
-          animation: gsap.timeline().to(card, {
-            x: finalX,
-            y: finalY,
-            scale: 1,
-            opacity: 1,
-            rotation: 0,
-            ease: "power2.out",
-            duration: 1,
-          }),
+          start: `top+=${index * 200} center`, // Staggered start times
+          end: `top+=${index * 200 + 300} center`,
+          scrub: 1.2,
+          animation: gsap.timeline()
+            .fromTo(card, {
+              x: 500,
+              y: -200,
+              rotation: 10,
+              scale: 0.8,
+              opacity: 0,
+            }, {
+              x: finalX,
+              y: finalY,
+              scale: 1,
+              opacity: 1,
+              rotation: 0,
+              ease: "power2.out",
+              duration: 1,
+            }),
         });
       });
     }
@@ -265,9 +274,9 @@ const Index = () => {
       </div>
 
       {/* Features Card Stack Section */}
-      <div ref={featuresContainerRef} className="relative z-30 min-h-[400vh] flex items-start justify-center pt-20">
-        <div className="sticky top-1/2 -translate-y-1/2 w-full max-w-6xl px-8">
-          <div className="relative w-fit mx-auto">
+      <div ref={featuresContainerRef} className="relative z-30 min-h-[300vh] flex items-start justify-start pt-20 pl-20">
+        <div className="sticky top-1/2 -translate-y-1/2 w-full max-w-6xl">
+          <div className="relative w-fit">
             {featureData.map((feature, index) => (
               <div
                 key={feature.number}
