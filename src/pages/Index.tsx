@@ -11,7 +11,8 @@ const Index = () => {
   const navRef = useRef<HTMLElement>(null);
   const taglineRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
-  const aboutRef = useRef<HTMLDivElement>(null);
+  const topRemixesRef = useRef<HTMLDivElement>(null);
+  const getStartedRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLElement>(null);
 
   const remixImages = [
@@ -19,6 +20,51 @@ const Index = () => {
     '/assets/carlhauser-vGiJ-tW3tZ4-unsplash.jpg',
     '/assets/cor.jpeg',
     '/assets/car.jpeg'
+  ];
+
+  const features = [
+    {
+      number: "01",
+      title: "AI Style Transfer",
+      description: "Transform any image with neural style transfer. Apply artistic styles from famous paintings or create your own unique aesthetic.",
+      icon: "🎨",
+      color: "from-purple-500 to-pink-500"
+    },
+    {
+      number: "02", 
+      title: "Spotify Integration",
+      description: "Sync your remixes with your Spotify playlists. Generate visuals that match your music's mood and energy.",
+      icon: "🎵",
+      color: "from-green-500 to-blue-500"
+    },
+    {
+      number: "03",
+      title: "Real-time Collaboration",
+      description: "Work together with other creators in real-time. Share ideas, iterate, and build something extraordinary together.",
+      icon: "👥",
+      color: "from-orange-500 to-red-500"
+    },
+    {
+      number: "04",
+      title: "Smart Color Palette",
+      description: "AI-powered color extraction and harmonization. Create cohesive visual experiences with intelligent color suggestions.",
+      icon: "🌈",
+      color: "from-cyan-500 to-purple-500"
+    },
+    {
+      number: "05",
+      title: "Motion Graphics",
+      description: "Bring your static images to life with AI-generated animations. Create dynamic content that captivates your audience.",
+      icon: "⚡",
+      color: "from-yellow-500 to-orange-500"
+    },
+    {
+      number: "06",
+      title: "Cloud Rendering",
+      description: "High-performance cloud processing for complex remixes. No hardware limitations, just pure creative freedom.",
+      icon: "☁️",
+      color: "from-blue-500 to-indigo-500"
+    }
   ];
 
   useEffect(() => {
@@ -58,13 +104,41 @@ const Index = () => {
       }
     );
 
-    gsap.fromTo(featuresRef.current, 
+    // Animate features cards
+    const featureCards = document.querySelectorAll('.feature-card');
+    featureCards.forEach((card, index) => {
+      gsap.fromTo(card,
+        { 
+          opacity: 0, 
+          y: 100,
+          scale: 0.8,
+          rotateX: 45
+        },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          rotateX: 0,
+          duration: 0.8,
+          delay: index * 0.1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: card,
+            start: "top 85%",
+            end: "bottom 15%",
+            toggleActions: "play none none reverse"
+          }
+        }
+      );
+    });
+
+    gsap.fromTo(topRemixesRef.current, 
       { y: 100 },
       {
         y: 0,
         duration: 1,
         scrollTrigger: {
-          trigger: featuresRef.current,
+          trigger: topRemixesRef.current,
           start: "top 80%",
           end: "bottom 20%",
           scrub: 1,
@@ -72,14 +146,14 @@ const Index = () => {
       }
     );
 
-    gsap.fromTo(aboutRef.current, 
+    gsap.fromTo(getStartedRef.current, 
       { opacity: 0, y: 100 },
       {
         opacity: 1,
         y: 0,
         duration: 1,
         scrollTrigger: {
-          trigger: aboutRef.current,
+          trigger: getStartedRef.current,
           start: "top 80%",
           end: "bottom 20%",
           scrub: 1,
@@ -128,9 +202,9 @@ const Index = () => {
           <div className="flex items-center space-x-8">
             <div className="text-white font-bold text-xl">remix.</div>
             <div className="hidden md:flex space-x-8 text-white/80">
-              <a href="#about" className="hover:text-white transition-colors">about</a>
               <a href="#features" className="hover:text-white transition-colors">features</a>
-              <a href="#contact" className="hover:text-white transition-colors">contact</a>
+              <a href="#remixes" className="hover:text-white transition-colors">remixes</a>
+              <a href="#get-started" className="hover:text-white transition-colors">get started</a>
             </div>
           </div>
           <Link 
@@ -172,8 +246,59 @@ const Index = () => {
         </div>
       </div>
 
+      {/* Features Section */}
+      <div id="features" ref={featuresRef} className="relative z-30 min-h-screen py-20 px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <h2 className="text-6xl md:text-8xl font-bold text-white mb-8 uppercase">
+              Features
+            </h2>
+            <p className="text-xl text-white/70 max-w-3xl mx-auto">
+              Cutting-edge AI tools designed to amplify your creativity and push the boundaries of digital art.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="feature-card relative group"
+                style={{ perspective: '1000px' }}
+              >
+                <div className="relative bg-black/40 backdrop-blur-lg rounded-2xl p-8 border border-white/10 hover:border-white/30 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2">
+                  {/* Gradient overlay */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-500`}></div>
+                  
+                  {/* Feature number */}
+                  <div className="text-6xl font-bold text-white/20 mb-4">
+                    {feature.number}
+                  </div>
+                  
+                  {/* Icon */}
+                  <div className="text-4xl mb-6 transform group-hover:scale-110 transition-transform duration-300">
+                    {feature.icon}
+                  </div>
+                  
+                  {/* Content */}
+                  <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 transition-all duration-300">
+                    {feature.title}
+                  </h3>
+                  
+                  <p className="text-white/70 leading-relaxed group-hover:text-white/90 transition-colors duration-300">
+                    {feature.description}
+                  </p>
+                  
+                  {/* Hover effect border */}
+                  <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${feature.color} opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500 -z-10`}></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Top Remixes Section */}
-      <div ref={featuresRef} className="relative z-30 min-h-screen text-white flex items-center justify-center p-8 bg-black/20 backdrop-blur-lg">
+      <div id="remixes" ref={topRemixesRef} className="relative z-30 min-h-screen text-white flex items-center justify-center p-8 bg-black/20 backdrop-blur-lg">
         <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           {/* Grid of images */}
           <div className="grid grid-cols-2 gap-4">
@@ -216,11 +341,11 @@ const Index = () => {
         </div>
       </div>
 
-      {/* About Section */}
-      <div ref={aboutRef} className="relative z-30 min-h-screen flex items-center justify-center px-8">
+      {/* Get Started Section (formerly About) */}
+      <div id="get-started" ref={getStartedRef} className="relative z-30 min-h-screen flex items-center justify-center px-8">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-6xl md:text-8xl font-bold text-white mb-12">
-            About
+            Get Started
           </h2>
           <p className="text-2xl text-white/90 leading-relaxed mb-8">
             We curate sonic journeys that exist between night and dawn, reality and dream. 
@@ -253,7 +378,7 @@ const Index = () => {
             <div>
               <h4 className="text-white font-semibold mb-4">Product</h4>
               <ul className="space-y-2 text-white/70">
-                <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
+                <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Studio</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
               </ul>
@@ -261,7 +386,7 @@ const Index = () => {
             <div>
               <h4 className="text-white font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-white/70">
-                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
+                <li><a href="#get-started" className="hover:text-white transition-colors">About</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
               </ul>
