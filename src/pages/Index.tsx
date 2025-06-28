@@ -102,8 +102,8 @@ const Index = () => {
     // Card stack animation
     const cards = featureCardsRef.current;
     if (cards.length) {
-      const STACK_OFFSET_X = 40; // Reduced offset for tighter stacking
-      const STACK_OFFSET_Y = 40;
+      const STACK_OFFSET_X = 50;
+      const STACK_OFFSET_Y = 50;
 
       // Set initial position for first card (leftmost position)
       gsap.set(cards[0], {
@@ -117,34 +117,32 @@ const Index = () => {
 
       // Hide other cards initially and position them off-screen from the right
       gsap.set(cards.slice(1), {
-        x: 500, // Start from far right
-        y: -200, // Start from above
-        scale: 0.8,
+        x: 600,
+        y: -100,
+        scale: 0.9,
         opacity: 0,
-        rotation: 10,
-        zIndex: (i) => 4 - i, // Reverse z-index so later cards appear on top
+        rotation: 5,
+        zIndex: (i) => 4 - i,
       });
 
       // Create sequential animations for each card
       cards.forEach((card, index) => {
-        if (index === 0) return; // Skip first card as it's already visible
+        if (index === 0) return;
 
-        // Calculate final stacked position (each card slightly to the right and down)
         const finalX = index * STACK_OFFSET_X;
         const finalY = index * STACK_OFFSET_Y;
 
-        // Each card appears after the previous one with a delay
         ScrollTrigger.create({
           trigger: featuresContainerRef.current,
-          start: `top+=${index * 200} center`, // Staggered start times
-          end: `top+=${index * 200 + 300} center`,
-          scrub: 1.2,
+          start: `top+=${index * 150} center`,
+          end: `top+=${index * 150 + 200} center`,
+          scrub: 1,
           animation: gsap.timeline()
             .fromTo(card, {
-              x: 500,
-              y: -200,
-              rotation: 10,
-              scale: 0.8,
+              x: 600,
+              y: -100,
+              rotation: 5,
+              scale: 0.9,
               opacity: 0,
             }, {
               x: finalX,
@@ -274,40 +272,53 @@ const Index = () => {
       </div>
 
       {/* Features Card Stack Section */}
-      <div ref={featuresContainerRef} className="relative z-30 min-h-[300vh] flex items-start justify-start pt-20 pl-20">
-        <div className="sticky top-1/2 -translate-y-1/2 w-full max-w-6xl">
-          <div className="relative w-fit">
-            {featureData.map((feature, index) => (
-              <div
-                key={feature.number}
-                ref={addToFeatureRefs}
-                className="absolute w-96 h-[500px] bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl overflow-hidden rounded-lg"
-              >
-                {/* Subtle gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+      <div ref={featuresContainerRef} className="relative z-30 min-h-screen flex items-center justify-center py-20">
+        <div className="w-full max-w-7xl mx-auto px-8">
+          {/* Section Title */}
+          <div className="text-center mb-20">
+            <h2 className="text-6xl md:text-8xl font-bold text-white mb-8">
+              Features
+            </h2>
+            <p className="text-xl text-white/70">
+              Powerful tools for creative expression
+            </p>
+          </div>
 
-                {/* Feature number */}
-                <div className="absolute top-8 left-8 z-10">
-                  <span className="text-8xl font-bold text-white/30 leading-none">{feature.number}</span>
+          {/* Card Stack Container */}
+          <div className="flex justify-center">
+            <div className="relative w-fit">
+              {featureData.map((feature, index) => (
+                <div
+                  key={feature.number}
+                  ref={addToFeatureRefs}
+                  className="absolute w-80 h-96 bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl overflow-hidden rounded-lg"
+                >
+                  {/* Subtle gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+
+                  {/* Feature number */}
+                  <div className="absolute top-6 left-6 z-10">
+                    <span className="text-6xl font-bold text-white/40 leading-none">{feature.number}</span>
+                  </div>
+
+                  {/* Feature content */}
+                  <div className="absolute bottom-6 left-6 right-6 z-10">
+                    <h3 className="text-2xl font-bold text-white mb-2">{feature.title}</h3>
+                    <p className="text-lg text-white/80 mb-3">{feature.subtitle}</p>
+                    <p className="text-sm text-white/60 leading-relaxed">{feature.description}</p>
+                  </div>
+
+                  {/* Decorative border */}
+                  <div className="absolute inset-3 border border-white/10 pointer-events-none z-10 rounded" />
+
+                  {/* Animated border elements */}
+                  <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+                  <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-transparent via-white/30 to-transparent"></div>
+                  <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
+                  <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-t from-transparent via-white/30 to-transparent"></div>
                 </div>
-
-                {/* Feature content */}
-                <div className="absolute bottom-8 left-8 right-8 z-10">
-                  <h2 className="text-3xl font-bold text-white mb-2">{feature.title}</h2>
-                  <p className="text-xl text-white/80 mb-4">{feature.subtitle}</p>
-                  <p className="text-sm text-white/60 leading-relaxed">{feature.description}</p>
-                </div>
-
-                {/* Decorative border */}
-                <div className="absolute inset-4 border border-white/10 pointer-events-none z-10 rounded" />
-
-                {/* Animated border elements */}
-                <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
-                <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-transparent via-white/30 to-transparent"></div>
-                <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
-                <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-t from-transparent via-white/30 to-transparent"></div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
