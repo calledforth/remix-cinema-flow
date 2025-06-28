@@ -12,8 +12,15 @@ const Index = () => {
   const taglineRef = useRef<HTMLParagraphElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const marketingRef = useRef<HTMLDivElement>(null);
+  const featuresRef = useRef<HTMLDivElement>(null);
+  const aboutRef = useRef<HTMLDivElement>(null);
+  const finalCtaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Smooth scrolling for the entire page
+    gsap.registerPlugin(ScrollTrigger);
+    
+    // Main hero transformation timeline
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: heroRef.current,
@@ -41,13 +48,59 @@ const Index = () => {
       duration: 0.5,
     }, "-=0.3");
 
+    // Animate sections on scroll
+    gsap.fromTo(featuresRef.current, 
+      { opacity: 0, y: 100 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        scrollTrigger: {
+          trigger: featuresRef.current,
+          start: "top 80%",
+          end: "bottom 20%",
+          scrub: 1,
+        }
+      }
+    );
+
+    gsap.fromTo(aboutRef.current, 
+      { opacity: 0, y: 100 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        scrollTrigger: {
+          trigger: aboutRef.current,
+          start: "top 80%",
+          end: "bottom 20%",
+          scrub: 1,
+        }
+      }
+    );
+
+    gsap.fromTo(finalCtaRef.current, 
+      { opacity: 0, y: 100 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        scrollTrigger: {
+          trigger: finalCtaRef.current,
+          start: "top 80%",
+          end: "bottom 20%",
+          scrub: 1,
+        }
+      }
+    );
+
     return () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, []);
 
   return (
-    <div className="relative min-h-[200vh] overflow-hidden">
+    <div className="relative overflow-hidden" style={{ scrollBehavior: 'smooth' }}>
       {/* Background with uploaded holographic image */}
       <div 
         className="fixed inset-0 bg-cover bg-center bg-no-repeat"
@@ -55,7 +108,7 @@ const Index = () => {
           backgroundImage: `url('/lovable-uploads/54af5b33-165e-4144-988d-42992d217f0a.png')`
         }}
       >
-        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0 bg-black/30"></div>
       </div>
 
       {/* Navigation - Initially Hidden */}
@@ -112,8 +165,113 @@ const Index = () => {
         </p>
       </div>
 
-      {/* Spacer for scroll */}
-      <div className="h-screen"></div>
+      {/* Features Section */}
+      <div ref={featuresRef} className="relative z-30 min-h-screen flex items-center justify-center px-8">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-6xl md:text-8xl font-bold text-white mb-12">
+            Features
+          </h2>
+          <div className="grid md:grid-cols-3 gap-12">
+            <div className="bg-white/10 backdrop-blur-sm p-8 rounded-lg">
+              <h3 className="text-2xl font-bold text-white mb-4">AI-Powered Creation</h3>
+              <p className="text-white/80">
+                Harness the power of artificial intelligence to transform your creative process and bring your wildest ideas to life.
+              </p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm p-8 rounded-lg">
+              <h3 className="text-2xl font-bold text-white mb-4">Cinematic Quality</h3>
+              <p className="text-white/80">
+                Create stunning visuals with professional-grade tools that deliver cinematic quality results every time.
+              </p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm p-8 rounded-lg">
+              <h3 className="text-2xl font-bold text-white mb-4">Boundary-Pushing</h3>
+              <p className="text-white/80">
+                Push the boundaries of what's possible with cutting-edge technology that redefines creative expression.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* About Section */}
+      <div ref={aboutRef} className="relative z-30 min-h-screen flex items-center justify-center px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-6xl md:text-8xl font-bold text-white mb-12">
+            About
+          </h2>
+          <p className="text-2xl text-white/90 leading-relaxed mb-8">
+            We curate sonic journeys that exist between night and dawn, reality and dream. 
+            Our platform blends ambient, techno, electro, and experimental elements to create 
+            deep, cinematic, and boundary-pushing soundscapes.
+          </p>
+          <p className="text-xl text-white/80 leading-relaxed">
+            Transform your creative process with AI-powered tools that understand the nuances 
+            of artistic expression and help you craft experiences that resonate on a deeper level.
+          </p>
+        </div>
+      </div>
+
+      {/* Final CTA Section */}
+      <div ref={finalCtaRef} className="relative z-30 min-h-screen flex items-center justify-center px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-8xl md:text-[12rem] font-bold text-white mb-12">
+            Start Remixing
+          </h2>
+          <p className="text-2xl text-white/90 mb-12 leading-relaxed">
+            Ready to transform your world? Step into the future of creative expression.
+          </p>
+          <Link 
+            to="/studio"
+            className="inline-block bg-white text-black px-12 py-6 rounded-full text-xl font-bold hover:bg-black hover:text-white transition-all duration-300 transform hover:scale-105"
+          >
+            Enter the Studio
+          </Link>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="relative z-30 bg-black/50 backdrop-blur-sm py-16 px-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="text-white font-bold text-2xl mb-4">remix.</h3>
+              <p className="text-white/70">
+                Your world, reimagined with AI.
+              </p>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-4">Product</h4>
+              <ul className="space-y-2 text-white/70">
+                <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Studio</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-4">Company</h4>
+              <ul className="space-y-2 text-white/70">
+                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-4">Support</h4>
+              <ul className="space-y-2 text-white/70">
+                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Privacy</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-white/20 mt-12 pt-8 text-center">
+            <p className="text-white/50">
+              © 2024 remix. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
