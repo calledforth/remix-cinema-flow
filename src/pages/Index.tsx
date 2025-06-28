@@ -10,7 +10,9 @@ const Index = () => {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const taglineRef = useRef<HTMLDivElement>(null);
-  const featuresRef = useRef<HTMLDivElement>(null);
+  const featuresContainerRef = useRef<HTMLDivElement>(null);
+  const featureCardsRef = useRef<HTMLDivElement[]>([]);
+  const topRemixesRef = useRef<HTMLDivElement>(null);
   const aboutRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLElement>(null);
 
@@ -20,6 +22,45 @@ const Index = () => {
     '/assets/cor.jpeg',
     '/assets/car.jpeg'
   ];
+
+  const featureData = [
+    { 
+      number: "01", 
+      title: "AI-POWERED", 
+      subtitle: "STYLE TRANSFER",
+      description: "Transform any image with neural style transfer technology"
+    },
+    { 
+      number: "02", 
+      title: "SPOTIFY", 
+      subtitle: "INTEGRATION",
+      description: "Sync your remixes with your favorite tracks and playlists"
+    },
+    { 
+      number: "03", 
+      title: "REAL-TIME", 
+      subtitle: "COLLABORATION",
+      description: "Work together with artists worldwide in real-time"
+    },
+    { 
+      number: "04", 
+      title: "CLOUD", 
+      subtitle: "RENDERING",
+      description: "High-performance processing in the cloud"
+    },
+    { 
+      number: "05", 
+      title: "EXPORT", 
+      subtitle: "ANYWHERE",
+      description: "Share to social media, download, or stream directly"
+    },
+  ];
+
+  const addToFeatureRefs = (el: HTMLDivElement | null) => {
+    if (el && !featureCardsRef.current.includes(el)) {
+      featureCardsRef.current.push(el);
+    }
+  };
 
   useEffect(() => {
     // Enable smooth scrolling
@@ -58,13 +99,64 @@ const Index = () => {
       }
     );
 
-    gsap.fromTo(featuresRef.current, 
+    // Card stack animation
+    const cards = featureCardsRef.current;
+    if (cards.length) {
+      const STACK_OFFSET_X = 60;
+      const STACK_OFFSET_Y = 60;
+
+      // Set initial position for first card
+      gsap.set(cards[0], {
+        x: 0,
+        y: 0,
+        scale: 1,
+        zIndex: 1,
+        opacity: 1,
+        rotation: 0,
+      });
+
+      // Hide other cards initially
+      gsap.set(cards.slice(1), {
+        x: 600,
+        y: -300,
+        scale: 0.9,
+        opacity: 0,
+        rotation: 8,
+        zIndex: (i) => i + 2,
+      });
+
+      // Create staggered animations
+      cards.forEach((card, index) => {
+        if (index === 0) return;
+
+        const finalX = index * STACK_OFFSET_X;
+        const finalY = index * STACK_OFFSET_Y;
+
+        ScrollTrigger.create({
+          trigger: featuresContainerRef.current,
+          start: `top+=${index * 300} bottom`,
+          end: `top+=${index * 300 + 400} bottom`,
+          scrub: 1.5,
+          animation: gsap.timeline().to(card, {
+            x: finalX,
+            y: finalY,
+            scale: 1,
+            opacity: 1,
+            rotation: 0,
+            ease: "power2.out",
+            duration: 1,
+          }),
+        });
+      });
+    }
+
+    gsap.fromTo(topRemixesRef.current, 
       { y: 100 },
       {
         y: 0,
         duration: 1,
         scrollTrigger: {
-          trigger: featuresRef.current,
+          trigger: topRemixesRef.current,
           start: "top 80%",
           end: "bottom 20%",
           scrub: 1,
@@ -172,8 +264,47 @@ const Index = () => {
         </div>
       </div>
 
+      {/* Features Card Stack Section */}
+      <div ref={featuresContainerRef} className="relative z-30 min-h-[400vh] flex items-start justify-center pt-20">
+        <div className="sticky top-1/2 -translate-y-1/2 w-full max-w-6xl px-8">
+          <div className="relative w-fit mx-auto">
+            {featureData.map((feature, index) => (
+              <div
+                key={feature.number}
+                ref={addToFeatureRefs}
+                className="absolute w-96 h-[500px] bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl overflow-hidden rounded-lg"
+              >
+                {/* Subtle gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+
+                {/* Feature number */}
+                <div className="absolute top-8 left-8 z-10">
+                  <span className="text-8xl font-bold text-white/30 leading-none">{feature.number}</span>
+                </div>
+
+                {/* Feature content */}
+                <div className="absolute bottom-8 left-8 right-8 z-10">
+                  <h2 className="text-3xl font-bold text-white mb-2">{feature.title}</h2>
+                  <p className="text-xl text-white/80 mb-4">{feature.subtitle}</p>
+                  <p className="text-sm text-white/60 leading-relaxed">{feature.description}</p>
+                </div>
+
+                {/* Decorative border */}
+                <div className="absolute inset-4 border border-white/10 pointer-events-none z-10 rounded" />
+
+                {/* Animated border elements */}
+                <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+                <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-transparent via-white/30 to-transparent"></div>
+                <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
+                <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-t from-transparent via-white/30 to-transparent"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Top Remixes Section */}
-      <div ref={featuresRef} className="relative z-30 min-h-screen text-white flex items-center justify-center p-8 bg-black/20 backdrop-blur-lg">
+      <div ref={topRemixesRef} className="relative z-30 min-h-screen text-white flex items-center justify-center p-8 bg-black/20 backdrop-blur-lg">
         <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           {/* Grid of images */}
           <div className="grid grid-cols-2 gap-4">
@@ -216,11 +347,11 @@ const Index = () => {
         </div>
       </div>
 
-      {/* About Section */}
+      {/* Get Started Section (formerly About) */}
       <div ref={aboutRef} className="relative z-30 min-h-screen flex items-center justify-center px-8">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-6xl md:text-8xl font-bold text-white mb-12">
-            About
+            Get Started
           </h2>
           <p className="text-2xl text-white/90 leading-relaxed mb-8">
             We curate sonic journeys that exist between night and dawn, reality and dream. 
