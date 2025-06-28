@@ -128,10 +128,11 @@ const Index = () => {
         zIndex: (i) => i + 2,
       });
 
-      // Hide completion text initially
+      // Hide completion text initially - COMPLETELY HIDDEN
       gsap.set(completionTextRef.current, {
         opacity: 0,
-        x: 50,
+        x: 100,
+        scale: 0.8,
       });
 
       // Create the main pinned scroll trigger that controls the entire animation
@@ -144,6 +145,9 @@ const Index = () => {
         onUpdate: (self) => {
           const progress = self.progress;
           const totalCards = cards.length;
+
+          // Track if all cards have appeared
+          let allCardsVisible = true;
 
           // Animate each card based on overall progress
           cards.forEach((card, index) => {
@@ -166,6 +170,11 @@ const Index = () => {
                 opacity: gsap.utils.interpolate(0, 1, localProgress),
                 rotation: gsap.utils.interpolate(8, 0, localProgress),
               });
+
+              // If this is not the last card, mark as not all visible
+              if (index < totalCards - 1) {
+                allCardsVisible = false;
+              }
             } else if (progress > cardEnd) {
               // Card animation is complete - set final position
               const finalX = index * STACK_OFFSET_X;
@@ -178,15 +187,31 @@ const Index = () => {
                 opacity: 1,
                 rotation: 0,
               });
+            } else {
+              // Card hasn't appeared yet
+              allCardsVisible = false;
             }
           });
 
-          // Show completion text when animation is 80% complete
-          if (progress > 0.8) {
+          // 🎯 ONLY show completion text when the FIFTH card (index 4) has FULLY appeared
+          const fifthCardProgress = (totalCards - 1 - 1) / (totalCards - 1); // Progress when 5th card starts
+          const fifthCardEnd = (totalCards - 1) / (totalCards - 1); // Progress when 5th card completes
+
+          if (progress >= fifthCardEnd) {
+            // Fifth card is fully visible - show completion text
             gsap.to(completionTextRef.current, {
               opacity: 1,
               x: 0,
-              duration: 0.5,
+              scale: 1,
+              duration: 0.8,
+              ease: "power2.out",
+            });
+          } else {
+            // Fifth card not fully visible yet - keep text hidden
+            gsap.set(completionTextRef.current, {
+              opacity: 0,
+              x: 100,
+              scale: 0.8,
             });
           }
         }
@@ -353,7 +378,7 @@ const Index = () => {
             ))}
           </div>
 
-          {/* Completion Text - Styled like rest of app (white, italics, no colors) */}
+          {/* Completion Text - ONLY APPEARS AFTER 5TH CARD */}
           <div ref={completionTextRef} className="max-w-md pt-16">
             <h3 className="text-4xl font-bold text-white mb-6 italic">
               The Complete Solution
