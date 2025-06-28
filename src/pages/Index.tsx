@@ -305,7 +305,7 @@ const Index = () => {
 
 
           {/* Card Stack Container */}
-          <div  ref={featuresContainerRef} className="flex justify-start pl-8">
+          <div className="flex justify-start pl-8">
             <div className="relative w-full max-w-7xl">
               {featureData.map((feature, index) => (
                 <div
