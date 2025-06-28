@@ -99,69 +99,80 @@ const Index = () => {
       }
     );
 
-    // Card stack animation - ENHANCED: Better spacing and longer focus
+    // PINNED CARD STACK ANIMATION - Scroll locks until animation completes
     const cards = featureCardsRef.current;
     if (cards.length) {
-      // INCREASED spacing for better card visibility
       const totalCards = cards.length;
-      const containerWidth = window.innerWidth * 0.9; // Increased to 90% of viewport width
-      const cardWidth = 320; // 80 * 4 = 320px
-      const availableSpace = containerWidth - cardWidth;
-      
-      // INCREASED offsets for more card visibility
-      const STACK_OFFSET_X = Math.min(100, availableSpace / (totalCards - 1)); // Increased from 60px to 100px
-      const STACK_OFFSET_Y = 60; // Increased from 40px to 60px for better visibility
+      const STACK_OFFSET_X = 100; // Horizontal spacing between cards
+      const STACK_OFFSET_Y = 60;  // Vertical spacing (downward stacking)
 
       // Set initial position for first card (bottom layer)
       gsap.set(cards[0], {
         x: 0,
         y: 0,
         scale: 1,
-        zIndex: 1, // LOWEST z-index for first card (bottom layer)
+        zIndex: 1,
         opacity: 1,
         rotation: 0,
       });
 
-      // Hide other cards initially and position them off-screen from the right
+      // Hide other cards initially
       gsap.set(cards.slice(1), {
-        x: 800, // Start from far right
-        y: -200, // Start from above
+        x: 800,
+        y: -200,
         scale: 0.8,
         opacity: 0,
         rotation: 8,
-        zIndex: (i) => i + 2, // INCREASING z-index so new cards appear on top
+        zIndex: (i) => i + 2,
       });
 
-      // Create sequential animations for each card with EXTENDED scroll range
-      cards.forEach((card, index) => {
-        if (index === 0) return;
+      // Create the main pinned scroll trigger that controls the entire animation
+      ScrollTrigger.create({
+        trigger: featuresContainerRef.current,
+        start: "top top",
+        end: "bottom bottom", // Pin for the entire section height
+        pin: true, // 🔒 PIN THE SECTION - This prevents scrolling past
+        scrub: 1,
+        onUpdate: (self) => {
+          const progress = self.progress;
+          const cardProgress = progress * totalCards;
 
-        // Calculate final stacked position (DOWNWARD stacking from left)
-        const finalX = index * STACK_OFFSET_X;
-        const finalY = index * STACK_OFFSET_Y; // POSITIVE values stack downward
+          // Animate each card based on overall progress
+          cards.forEach((card, index) => {
+            if (index === 0) return; // Skip first card
 
-        ScrollTrigger.create({
-          trigger: featuresContainerRef.current,
-          start: `top+=${index * 300} center`, // INCREASED from 200 to 300 for slower progression
-          end: `top+=${index * 300 + 500} center`, // INCREASED from 300 to 500 for longer animation
-          scrub: 2, // INCREASED from 1.5 to 2 for smoother, slower animation
-          animation: gsap.timeline()
-            .fromTo(card, {
-              x: 800,
-              y: -200,
-              rotation: 8,
-              scale: 0.8,
-              opacity: 0,
-            }, {
-              x: finalX,
-              y: finalY,
-              scale: 1,
-              opacity: 1,
-              rotation: 0,
-              ease: "power2.out",
-              duration: 1,
-            }),
-        });
+            const cardStart = (index - 1) / (totalCards - 1);
+            const cardEnd = index / (totalCards - 1);
+            
+            if (progress >= cardStart && progress <= cardEnd) {
+              // Card is currently animating
+              const localProgress = (progress - cardStart) / (cardEnd - cardStart);
+              
+              const finalX = index * STACK_OFFSET_X;
+              const finalY = index * STACK_OFFSET_Y;
+
+              gsap.set(card, {
+                x: gsap.utils.interpolate(800, finalX, localProgress),
+                y: gsap.utils.interpolate(-200, finalY, localProgress),
+                scale: gsap.utils.interpolate(0.8, 1, localProgress),
+                opacity: gsap.utils.interpolate(0, 1, localProgress),
+                rotation: gsap.utils.interpolate(8, 0, localProgress),
+              });
+            } else if (progress > cardEnd) {
+              // Card animation is complete - set final position
+              const finalX = index * STACK_OFFSET_X;
+              const finalY = index * STACK_OFFSET_Y;
+              
+              gsap.set(card, {
+                x: finalX,
+                y: finalY,
+                scale: 1,
+                opacity: 1,
+                rotation: 0,
+              });
+            }
+          });
+        }
       });
     }
 
@@ -279,9 +290,9 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Features Card Stack Section - EXTENDED height for longer focus */}
-      <div ref={featuresContainerRef} className="relative z-30 min-h-[200vh] py-32">
-        <div className="w-full max-w-7xl mx-auto px-8">
+      {/* Features Card Stack Section - PINNED SCROLLING */}
+      <div ref={featuresContainerRef} className="relative z-30 h-[300vh] py-32">
+        <div className="w-full max-w-7xl mx-auto px-8 h-screen flex flex-col justify-center">
           {/* Section Title */}
           <div className="text-left mb-32 ml-8">
             <h2 className="text-6xl md:text-8xl font-bold text-white mb-8">
@@ -292,7 +303,7 @@ const Index = () => {
             </p>
           </div>
 
-          {/* Card Stack Container - INCREASED width for better spacing */}
+          {/* Card Stack Container */}
           <div className="flex justify-start pl-8">
             <div className="relative w-full max-w-7xl">
               {featureData.map((feature, index) => (
