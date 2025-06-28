@@ -103,7 +103,7 @@ const Index = () => {
     const cards = featureCardsRef.current;
     if (cards.length) {
       const totalCards = cards.length;
-      const STACK_OFFSET_X = 100; // Horizontal spacing between cards
+      const STACK_OFFSET_X = 15z0; // Horizontal spacing between cards
       const STACK_OFFSET_Y = 60;  // Vertical spacing (downward stacking)
 
       // Set initial position for first card (bottom layer)
@@ -291,17 +291,9 @@ const Index = () => {
       </div>
 
       {/* Features Card Stack Section - PINNED SCROLLING */}
-      <div className="relative z-30 h-[300vh] py-32">
+      <div ref={featuresContainerRef} className="relative z-30 h-[300vh] py-32">
         <div className="w-full max-w-7xl mx-auto px-8 h-screen flex flex-col justify-center">
           {/* {/* Section Title */}
-          <div className="text-left mb-32 ml-8">
-            <h2 className="text-6xl md:text-8xl font-bold text-white mb-8">
-              Features
-            </h2>
-            <p className="text-xl text-white/70">
-              Powerful tools for creative expression
-            </p>
-          </div>
 
 
           {/* Card Stack Container */}
