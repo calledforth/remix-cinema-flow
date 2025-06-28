@@ -28,42 +28,48 @@ const Index = () => {
       title: "AI Style Transfer",
       description: "Transform any image with neural style transfer. Apply artistic styles from famous paintings or create your own unique aesthetic.",
       icon: "🎨",
-      color: "from-purple-500 to-pink-500"
+      color: "from-purple-500 to-pink-500",
+      bgColor: "bg-purple-900/80"
     },
     {
       number: "02", 
       title: "Spotify Integration",
       description: "Sync your remixes with your Spotify playlists. Generate visuals that match your music's mood and energy.",
       icon: "🎵",
-      color: "from-green-500 to-blue-500"
+      color: "from-green-500 to-blue-500",
+      bgColor: "bg-green-900/80"
     },
     {
       number: "03",
       title: "Real-time Collaboration",
       description: "Work together with other creators in real-time. Share ideas, iterate, and build something extraordinary together.",
       icon: "👥",
-      color: "from-orange-500 to-red-500"
+      color: "from-orange-500 to-red-500",
+      bgColor: "bg-orange-900/80"
     },
     {
       number: "04",
       title: "Smart Color Palette",
       description: "AI-powered color extraction and harmonization. Create cohesive visual experiences with intelligent color suggestions.",
       icon: "🌈",
-      color: "from-cyan-500 to-purple-500"
+      color: "from-cyan-500 to-purple-500",
+      bgColor: "bg-cyan-900/80"
     },
     {
       number: "05",
       title: "Motion Graphics",
       description: "Bring your static images to life with AI-generated animations. Create dynamic content that captivates your audience.",
       icon: "⚡",
-      color: "from-yellow-500 to-orange-500"
+      color: "from-yellow-500 to-orange-500",
+      bgColor: "bg-yellow-900/80"
     },
     {
       number: "06",
       title: "Cloud Rendering",
       description: "High-performance cloud processing for complex remixes. No hardware limitations, just pure creative freedom.",
       icon: "☁️",
-      color: "from-blue-500 to-indigo-500"
+      color: "from-blue-500 to-indigo-500",
+      bgColor: "bg-blue-900/80"
     }
   ];
 
@@ -104,29 +110,41 @@ const Index = () => {
       }
     );
 
-    // Animate features cards
-    const featureCards = document.querySelectorAll('.feature-card');
-    featureCards.forEach((card, index) => {
+    // Stacked features animation
+    const stackedCards = document.querySelectorAll('.stacked-card');
+    stackedCards.forEach((card, index) => {
+      const isLast = index === stackedCards.length - 1;
+      
       gsap.fromTo(card,
         { 
-          opacity: 0, 
-          y: 100,
-          scale: 0.8,
-          rotateX: 45
+          y: index * 60,
+          scale: 1 - (index * 0.05),
+          opacity: 1 - (index * 0.1)
         },
         {
-          opacity: 1,
           y: 0,
           scale: 1,
-          rotateX: 0,
-          duration: 0.8,
-          delay: index * 0.1,
+          opacity: 1,
+          duration: 1,
           ease: "power3.out",
           scrollTrigger: {
-            trigger: card,
-            start: "top 85%",
-            end: "bottom 15%",
-            toggleActions: "play none none reverse"
+            trigger: featuresRef.current,
+            start: `top+=${index * 100} 80%`,
+            end: `bottom-=${index * 100} 20%`,
+            scrub: 1,
+            onUpdate: (self) => {
+              // Create the unstacking effect
+              const progress = self.progress;
+              const yOffset = progress * index * -120;
+              const scaleValue = 1 - ((1 - progress) * index * 0.05);
+              const opacityValue = 1 - ((1 - progress) * index * 0.1);
+              
+              gsap.set(card, {
+                y: yOffset,
+                scale: scaleValue,
+                opacity: opacityValue
+              });
+            }
           }
         }
       );
@@ -246,53 +264,65 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Features Section */}
-      <div id="features" ref={featuresRef} className="relative z-30 min-h-screen py-20 px-8">
+      {/* Features Section - Stacked Cards */}
+      <div id="features" ref={featuresRef} className="relative z-30 min-h-[400vh] py-20 px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
+          <div className="text-center mb-20 sticky top-20 z-40">
             <h2 className="text-6xl md:text-8xl font-bold text-white mb-8 uppercase">
               Features
             </h2>
             <p className="text-xl text-white/70 max-w-3xl mx-auto">
-              Cutting-edge AI tools designed to amplify your creativity and push the boundaries of digital art.
+              Cutting-edge AI tools designed to amplify your creativity
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="feature-card relative group"
-                style={{ perspective: '1000px' }}
-              >
-                <div className="relative bg-black/40 backdrop-blur-lg rounded-2xl p-8 border border-white/10 hover:border-white/30 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2">
-                  {/* Gradient overlay */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-500`}></div>
-                  
-                  {/* Feature number */}
-                  <div className="text-6xl font-bold text-white/20 mb-4">
-                    {feature.number}
+          {/* Stacked Cards Container */}
+          <div className="relative h-[300vh] flex items-center justify-center">
+            <div className="sticky top-1/2 transform -translate-y-1/2 w-full max-w-4xl">
+              {features.map((feature, index) => (
+                <div
+                  key={index}
+                  className={`stacked-card absolute inset-0 ${feature.bgColor} backdrop-blur-xl rounded-3xl border border-white/20 p-12 shadow-2xl`}
+                  style={{
+                    zIndex: features.length - index,
+                    transform: `translateY(${index * 60}px) scale(${1 - (index * 0.05)})`,
+                    opacity: 1 - (index * 0.1)
+                  }}
+                >
+                  <div className="flex items-start justify-between mb-8">
+                    <div className={`text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r ${feature.color} opacity-30`}>
+                      {feature.number}
+                    </div>
+                    <div className="text-6xl transform rotate-12">
+                      {feature.icon}
+                    </div>
                   </div>
                   
-                  {/* Icon */}
-                  <div className="text-4xl mb-6 transform group-hover:scale-110 transition-transform duration-300">
-                    {feature.icon}
+                  <div className="space-y-6">
+                    <h3 className={`text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r ${feature.color}`}>
+                      {feature.title}
+                    </h3>
+                    
+                    <p className="text-xl text-white/90 leading-relaxed max-w-2xl">
+                      {feature.description}
+                    </p>
+                    
+                    <div className="flex items-center space-x-4 pt-6">
+                      <button className={`px-8 py-3 bg-gradient-to-r ${feature.color} text-white font-semibold rounded-full hover:scale-105 transition-transform duration-300`}>
+                        Learn More
+                      </button>
+                      <button className="px-8 py-3 border border-white/30 text-white font-semibold rounded-full hover:bg-white/10 transition-colors duration-300">
+                        Try Now
+                      </button>
+                    </div>
                   </div>
                   
-                  {/* Content */}
-                  <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 transition-all duration-300">
-                    {feature.title}
-                  </h3>
-                  
-                  <p className="text-white/70 leading-relaxed group-hover:text-white/90 transition-colors duration-300">
-                    {feature.description}
-                  </p>
-                  
-                  {/* Hover effect border */}
-                  <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${feature.color} opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500 -z-10`}></div>
+                  {/* Decorative elements */}
+                  <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${feature.color} opacity-10 rounded-full blur-3xl`}></div>
+                  <div className={`absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr ${feature.color} opacity-20 rounded-full blur-2xl`}></div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
