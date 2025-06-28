@@ -302,7 +302,7 @@ const Index = () => {
       </div>
 
       {/* Features Card Stack Section - PINNED SCROLLING */}
-      <div ref={featuresContainerRef} className="relative z-30 h-[400vh]">
+      <div ref={featuresContainerRef} className="relative z-30">
         <div className="w-full h-screen flex items-center justify-start px-8">
           {/* Card Stack Container - Positioned TOP LEFT */}
           <div className="relative">
