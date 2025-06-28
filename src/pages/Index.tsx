@@ -99,7 +99,7 @@ const Index = () => {
       }
     );
 
-    // Card stack animation - Fixed for DOWNWARD stacking and dynamic spacing
+    // Card stack animation - FIXED: New cards appear on top
     const cards = featureCardsRef.current;
     if (cards.length) {
       // Dynamic spacing calculation
@@ -112,12 +112,12 @@ const Index = () => {
       const STACK_OFFSET_X = Math.min(60, availableSpace / (totalCards - 1)); // Max 60px, but adjust based on space
       const STACK_OFFSET_Y = 40; // POSITIVE for downward stacking
 
-      // Set initial position for first card (top-left position)
+      // Set initial position for first card (bottom layer)
       gsap.set(cards[0], {
         x: 0,
         y: 0,
         scale: 1,
-        zIndex: totalCards, // Highest z-index for bottom card
+        zIndex: 1, // LOWEST z-index for first card (bottom layer)
         opacity: 1,
         rotation: 0,
       });
@@ -129,7 +129,7 @@ const Index = () => {
         scale: 0.8,
         opacity: 0,
         rotation: 8,
-        zIndex: (i) => totalCards - i - 1, // Decreasing z-index so new cards appear on top
+        zIndex: (i) => i + 2, // INCREASING z-index so new cards appear on top
       });
 
       // Create sequential animations for each card
