@@ -16,7 +16,7 @@ const Index = () => {
   const featuresTitleRef = useRef<HTMLDivElement>(null);
   const completionTextRef = useRef<HTMLDivElement>(null);
   const topRemixesRef = useRef<HTMLDivElement>(null);
-  const aboutRef = useRef<HTMLElement>(null);
+  const aboutRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLElement>(null);
   const smoothWrapperRef = useRef<HTMLDivElement>(null);
   const smoothContentRef = useRef<HTMLDivElement>(null);
