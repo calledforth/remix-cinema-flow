@@ -7,6 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
 import { FileUpload } from '@/components/ui/file-upload';
 import RemixCover from "@/components/ui/RemixCover";
+import { AI_Prompt } from "@/components/ui/animated-ai-input";
 
 interface Message {
   id: string;
@@ -44,15 +45,16 @@ const Studio = () => {
     }
   };
 
-  const handleSendMessage = async () => {
-    if (!inputValue.trim() && !uploadedFile) return;
+  const handleSendMessage = async (message?: string) => {
+    const messageText = message || inputValue;
+    if (!messageText.trim() && !uploadedFile) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
       type: 'user',
       content: uploadedFile 
-        ? `Uploaded: ${uploadedFile.name} - ${inputValue || 'Ready to remix!'}`
-        : inputValue,
+        ? `Uploaded: ${uploadedFile.name} - ${messageText || 'Ready to remix!'}`
+        : messageText,
       timestamp: new Date()
     };
 
@@ -186,21 +188,8 @@ const Studio = () => {
               </div>
 
               {/* Chat Input Bar */}
-              <div className="w-full max-w-2xl relative">
-                <Input
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="CHAT"
-                  className="w-full h-12 bg-transparent border-2 border-white text-white placeholder-neutral-400 text-center text-base tracking-wider focus:border-white/80 focus:ring-0"
-                />
-                <Button
-                  onClick={handleSendMessage}
-                  disabled={!inputValue.trim() && !uploadedFile}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-black hover:bg-gray-200 h-8 w-8 p-0 shadow-lg disabled:opacity-50"
-                >
-                  <Send className="w-3 h-3" />
-                </Button>
+              <div className="w-full max-w-2xl relative flex justify-center">
+                <AI_Prompt onSubmit={handleSendMessage} />
               </div>
 
             </div>
@@ -275,25 +264,8 @@ const Studio = () => {
               </div>
 
               {/* Chat Input - No borders */}
-              <div className="bg-black/40 backdrop-blur-xl p-4">
-                <div className="flex items-end space-x-3">
-                  <div className="flex-1">
-                    <Textarea
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      placeholder="Send a message..."
-                      className="min-h-[50px] max-h-24 bg-transparent border-2 border-white text-white placeholder-white/50 resize-none focus:border-white/80 focus:ring-0 text-center"
-                    />
-                  </div>
-                  <Button
-                    onClick={handleSendMessage}
-                    disabled={!inputValue.trim() || isLoading}
-                    className="bg-white text-black hover:bg-gray-200 h-[50px] px-4 shadow-lg"
-                  >
-                    <Send className="w-4 h-4" />
-                  </Button>
-                </div>
+              <div className="bg-black/40 backdrop-blur-xl p-4 flex justify-center">
+                <AI_Prompt onSubmit={handleSendMessage} />
               </div>
             </>
           )}
