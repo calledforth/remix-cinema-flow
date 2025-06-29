@@ -503,7 +503,6 @@ const Studio = () => {
         </div>
       </div>
     </div>
-    </div>
   );
 };
 
