@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Send, Music, Mic, Upload, Settings, User, Plus, Menu, X, Sparkles, AudioWaveform as Waveform, Headphones, Play } from 'lucide-react';
@@ -88,19 +87,12 @@ const Studio = () => {
   };
 
   return (
-    <div className="h-screen bg-black p-3 overflow-hidden">
-      {/* Subtle background pattern */}
-      <div className="fixed inset-0 opacity-5">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_50%)]"></div>
-      </div>
-
-      <div className="relative z-10 h-full flex gap-3">
+    <div className="h-screen bg-black p-4 overflow-hidden">
+      <div className="h-full flex gap-4">
         {/* Sidebar Island */}
-        <div className={`${sidebarOpen ? 'w-64' : 'w-14'} transition-all duration-300`}>
-          <div className="h-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-white/2 to-transparent"></div>
-            
-            <div className="relative z-10 h-full flex flex-col">
+        <div className={`${sidebarOpen ? 'w-64' : 'w-16'} transition-all duration-200`}>
+          <div className="h-full bg-black/40 backdrop-blur-xl border border-white/20 rounded-3xl overflow-hidden">
+            <div className="h-full flex flex-col">
               {/* Header */}
               <div className="p-4 border-b border-white/10">
                 <div className="flex items-center justify-between">
@@ -113,7 +105,7 @@ const Studio = () => {
                     variant="ghost"
                     size="sm"
                     onClick={() => setSidebarOpen(!sidebarOpen)}
-                    className="text-white/70 hover:text-white hover:bg-white/10 rounded-lg"
+                    className="text-white/70 hover:text-white hover:bg-white/10 rounded-xl"
                   >
                     {sidebarOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
                   </Button>
@@ -122,27 +114,27 @@ const Studio = () => {
 
               {/* Navigation */}
               <div className="flex-1 p-3">
-                <div className="space-y-1">
+                <div className="space-y-2">
                   <Button
                     variant="ghost"
-                    className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-lg h-9`}
+                    className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-xl h-10`}
                   >
-                    <Plus className="w-4 h-4 mr-2" />
-                    {sidebarOpen && "New Session"}
+                    <Plus className="w-4 h-4" />
+                    {sidebarOpen && <span className="ml-3">New Session</span>}
                   </Button>
                   <Button
                     variant="ghost"
-                    className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-lg h-9`}
+                    className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-xl h-10`}
                   >
-                    <Music className="w-4 h-4 mr-2" />
-                    {sidebarOpen && "My Remixes"}
+                    <Music className="w-4 h-4" />
+                    {sidebarOpen && <span className="ml-3">My Remixes</span>}
                   </Button>
                   <Button
                     variant="ghost"
-                    className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-lg h-9`}
+                    className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-xl h-10`}
                   >
-                    <Upload className="w-4 h-4 mr-2" />
-                    {sidebarOpen && "Library"}
+                    <Upload className="w-4 h-4" />
+                    {sidebarOpen && <span className="ml-3">Library</span>}
                   </Button>
                 </div>
               </div>
@@ -151,17 +143,17 @@ const Studio = () => {
               <div className="p-3 border-t border-white/10">
                 <Button
                   variant="ghost"
-                  className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-lg mb-1 h-9`}
+                  className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-xl mb-2 h-10`}
                 >
-                  <Settings className="w-4 h-4 mr-2" />
-                  {sidebarOpen && "Settings"}
+                  <Settings className="w-4 h-4" />
+                  {sidebarOpen && <span className="ml-3">Settings</span>}
                 </Button>
                 <Button
                   variant="ghost"
-                  className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-lg h-9`}
+                  className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-xl h-10`}
                 >
-                  <User className="w-4 h-4 mr-2" />
-                  {sidebarOpen && "Profile"}
+                  <User className="w-4 h-4" />
+                  {sidebarOpen && <span className="ml-3">Profile</span>}
                 </Button>
               </div>
             </div>
@@ -169,51 +161,52 @@ const Studio = () => {
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col gap-3 min-h-0">
+        <div className="flex-1 flex flex-col gap-4 min-h-0">
           {!chatStarted ? (
-            /* Initial Layout - Before Chat Starts */
+            /* Initial Compact Layout */
             <>
-              {/* Remix Covers Row */}
-              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-6">
-                <div className="flex items-center space-x-4 overflow-x-auto">
-                  {remixCovers.map((remix) => (
-                    <div key={remix.id} className="flex-shrink-0">
-                      {remix.image ? (
-                        <div className="w-32 h-32 bg-gray-600 rounded-2xl overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-200 group">
-                          <img 
-                            src={remix.image} 
-                            alt={remix.title}
-                            className="w-full h-full object-cover"
-                          />
-                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                            <Play className="w-8 h-8 text-white" />
+              {/* Combined Top Section - Remix Covers + Upload Area */}
+              <div className="flex-1 bg-black/40 backdrop-blur-xl border border-white/20 rounded-3xl p-6">
+                {/* Remix Covers Row */}
+                <div className="mb-6">
+                  <div className="flex items-center space-x-4 overflow-x-auto pb-2">
+                    {remixCovers.map((remix) => (
+                      <div key={remix.id} className="flex-shrink-0">
+                        {remix.image ? (
+                          <div className="relative w-24 h-24 bg-gray-600 rounded-2xl overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-200 group">
+                            <img 
+                              src={remix.image} 
+                              alt={remix.title}
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                              <Play className="w-6 h-6 text-white" />
+                            </div>
                           </div>
-                        </div>
-                      ) : (
-                        <div className="w-32 h-32 bg-white/10 rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center cursor-pointer hover:bg-white/15 transition-colors duration-200">
-                          <span className="text-white/70 text-sm font-medium">{remix.title}</span>
-                        </div>
-                      )}
-                      <div className="mt-2 text-center">
-                        <p className="text-white text-sm font-medium">{remix.title}</p>
-                        {remix.genre && (
-                          <p className="text-white/50 text-xs">{remix.genre}</p>
+                        ) : (
+                          <div className="w-24 h-24 bg-white/10 rounded-2xl border-2 border-dashed border-white/30 flex items-center justify-center cursor-pointer hover:bg-white/15 transition-colors duration-200">
+                            <span className="text-white/70 text-xs font-medium">{remix.title}</span>
+                          </div>
                         )}
+                        <div className="mt-2 text-center">
+                          <p className="text-white text-xs font-medium">{remix.title}</p>
+                          {remix.genre && (
+                            <p className="text-white/50 text-xs">{remix.genre}</p>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              {/* Upload Area */}
-              <div className="flex-1 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-8">
-                <div className="h-full flex items-center justify-center">
+                {/* Upload Area */}
+                <div className="flex-1 flex items-center justify-center">
                   <div 
-                    className="w-full max-w-md border-2 border-dashed border-white/30 rounded-3xl p-12 text-center cursor-pointer hover:border-white/50 hover:bg-white/5 transition-all duration-200"
+                    className="w-full max-w-lg border-2 border-dashed border-white/30 rounded-3xl p-8 text-center cursor-pointer hover:border-white/50 hover:bg-white/5 transition-all duration-200"
                     onClick={() => fileInputRef.current?.click()}
                   >
-                    <Upload className="w-12 h-12 text-white/50 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-white mb-2">UPLOAD MUSIC to remix</h3>
+                    <Upload className="w-10 h-10 text-white/50 mx-auto mb-3" />
+                    <h3 className="text-lg font-semibold text-white mb-2">UPLOAD MUSIC to remix</h3>
                     <p className="text-white/60 text-sm">
                       Drag and drop your audio file here or click to browse
                     </p>
@@ -221,7 +214,7 @@ const Studio = () => {
                       Supports MP3, WAV, FLAC files
                     </p>
                     {uploadedFile && (
-                      <div className="mt-4 p-3 bg-white/10 rounded-lg">
+                      <div className="mt-4 p-3 bg-white/10 rounded-xl">
                         <p className="text-white text-sm">📁 {uploadedFile.name}</p>
                       </div>
                     )}
@@ -236,8 +229,8 @@ const Studio = () => {
                 </div>
               </div>
 
-              {/* Chat Input */}
-              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-4">
+              {/* Chat Input Island */}
+              <div className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-3xl p-4">
                 <div className="flex items-end space-x-3">
                   <div className="flex-1">
                     <Textarea
@@ -245,13 +238,13 @@ const Studio = () => {
                       onChange={(e) => setInputValue(e.target.value)}
                       onKeyPress={handleKeyPress}
                       placeholder="Describe how you want to remix your music..."
-                      className="min-h-[50px] max-h-24 bg-white/10 border-white/20 text-white placeholder-white/50 resize-none focus:border-white/40 focus:ring-white/20 rounded-xl backdrop-blur-sm text-sm"
+                      className="min-h-[50px] max-h-24 bg-white/10 border-white/20 text-white placeholder-white/50 resize-none focus:border-white/40 focus:ring-white/20 rounded-2xl backdrop-blur-sm text-sm"
                     />
                   </div>
                   <Button
                     onClick={handleSendMessage}
                     disabled={!inputValue.trim() && !uploadedFile}
-                    className="bg-white text-black hover:bg-gray-200 h-[50px] px-4 rounded-xl shadow-lg disabled:opacity-50"
+                    className="bg-white text-black hover:bg-gray-200 h-[50px] px-4 rounded-2xl shadow-lg disabled:opacity-50"
                   >
                     <Send className="w-4 h-4" />
                   </Button>
@@ -261,15 +254,15 @@ const Studio = () => {
           ) : (
             /* Chat Interface - After Chat Starts */
             <>
-              {/* Chat Messages */}
+              {/* Chat Messages Island */}
               <div className="flex-1 min-h-0">
-                <div className="h-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
-                  <div className="relative z-10 h-full flex flex-col">
+                <div className="h-full bg-black/40 backdrop-blur-xl border border-white/20 rounded-3xl overflow-hidden">
+                  <div className="h-full flex flex-col">
                     {/* Chat Header */}
                     <div className="p-4 border-b border-white/10">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-gradient-to-br from-gray-600 to-gray-800 rounded-xl flex items-center justify-center">
+                          <div className="w-8 h-8 bg-white/10 rounded-xl flex items-center justify-center">
                             <Sparkles className="w-4 h-4 text-white" />
                           </div>
                           <div>
@@ -281,7 +274,7 @@ const Studio = () => {
                           size="sm" 
                           variant="ghost"
                           onClick={() => setChatStarted(false)}
-                          className="text-white/70 hover:text-white hover:bg-white/10 rounded-lg text-xs h-8"
+                          className="text-white/70 hover:text-white hover:bg-white/10 rounded-xl text-xs h-8"
                         >
                           New Session
                         </Button>
@@ -297,7 +290,7 @@ const Studio = () => {
                             className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
                           >
                             <div
-                              className={`max-w-[80%] p-3 rounded-xl backdrop-blur-sm text-sm ${
+                              className={`max-w-[80%] p-3 rounded-2xl backdrop-blur-sm text-sm ${
                                 message.type === 'user'
                                   ? 'bg-white text-black border border-gray-300'
                                   : 'bg-white/10 text-white border border-white/20'
@@ -313,12 +306,12 @@ const Studio = () => {
 
                         {isLoading && (
                           <div className="flex justify-start">
-                            <div className="bg-white/10 border border-white/20 p-3 rounded-xl backdrop-blur-sm">
+                            <div className="bg-white/10 border border-white/20 p-3 rounded-2xl backdrop-blur-sm">
                               <div className="flex items-center space-x-2">
                                 <div className="flex space-x-1">
-                                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse"></div>
-                                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse"></div>
-                                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse"></div>
+                                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
+                                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
+                                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
                                 </div>
                                 <span className="text-white/60 text-xs">AI is thinking...</span>
                               </div>
@@ -333,8 +326,8 @@ const Studio = () => {
                 </div>
               </div>
 
-              {/* Chat Input */}
-              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-4">
+              {/* Chat Input Island */}
+              <div className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-3xl p-4">
                 <div className="flex items-end space-x-3">
                   <div className="flex-1">
                     <Textarea
@@ -342,13 +335,13 @@ const Studio = () => {
                       onChange={(e) => setInputValue(e.target.value)}
                       onKeyPress={handleKeyPress}
                       placeholder="Continue the conversation..."
-                      className="min-h-[50px] max-h-24 bg-white/10 border-white/20 text-white placeholder-white/50 resize-none focus:border-white/40 focus:ring-white/20 rounded-xl backdrop-blur-sm text-sm"
+                      className="min-h-[50px] max-h-24 bg-white/10 border-white/20 text-white placeholder-white/50 resize-none focus:border-white/40 focus:ring-white/20 rounded-2xl backdrop-blur-sm text-sm"
                     />
                   </div>
                   <Button
                     onClick={handleSendMessage}
                     disabled={!inputValue.trim() || isLoading}
-                    className="bg-white text-black hover:bg-gray-200 h-[50px] px-4 rounded-xl shadow-lg"
+                    className="bg-white text-black hover:bg-gray-200 h-[50px] px-4 rounded-2xl shadow-lg"
                   >
                     <Send className="w-4 h-4" />
                   </Button>
