@@ -15,7 +15,7 @@ const Index = () => {
   const aboutRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    gsap.context(() => {
+    const ctx = gsap.context(() => {
       // Hero Section Animation
       gsap.fromTo(heroRef.current,
         { opacity: 0, y: 50 },
@@ -66,7 +66,7 @@ const Index = () => {
     }, containerRef.current);
 
     return () => {
-      gsap.killAll();
+      ctx.revert();
     };
   }, []);
 
