@@ -72,7 +72,7 @@ const Index = () => {
     let smoother = ScrollSmoother.create({
       wrapper: smoothWrapperRef.current,
       content: smoothContentRef.current,
-      smooth: 2, // Smooth factor
+      smooth: 1, // Smooth factor
       effects: true, // Enable data-speed effects
       normalizeScroll: true, // Better mobile support
     });
