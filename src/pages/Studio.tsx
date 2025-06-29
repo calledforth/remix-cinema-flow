@@ -25,10 +25,10 @@ const Studio = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const remixCovers = [
-    { id: 1, title: 'REMIX1', image: '/assets/car.jpeg', genre: 'Electronic', shadowColor: 'rgba(107, 114, 128, 0.6)' },
-    { id: 2, title: 'REMIX', image: '/assets/cor.jpeg', genre: 'Hip Hop', shadowColor: 'rgba(239, 68, 68, 0.5)' },
-    { id: 3, title: 'REMIX', image: '/assets/carlhauser-vGiJ-tW3tZ4-unsplash.jpg', genre: 'Pop', shadowColor: 'rgba(59, 130, 246, 0.5)' },
-    { id: 4, title: 'REMIX', image: '/assets/download (1).jpg', genre: 'Rock', shadowColor: 'rgba(245, 158, 11, 0.5)' },
+    { id: 1, title: 'REMIX1', image: '/assets/car.jpeg', genre: 'Electronic' },
+    { id: 2, title: 'REMIX', image: '/assets/cor.jpeg', genre: 'Hip Hop' },
+    { id: 3, title: 'REMIX', image: '/assets/carlhauser-vGiJ-tW3tZ4-unsplash.jpg', genre: 'Pop' },
+    { id: 4, title: 'REMIX', image: '/assets/download (1).jpg', genre: 'Rock' },
     { id: 5, title: 'See all', image: null, genre: null },
   ];
 
@@ -164,27 +164,24 @@ const Studio = () => {
         <div className="flex-1 flex flex-col gap-4 min-h-0">
           {!chatStarted ? (
             /* Initial Compact Layout - Centered */
-            <div className="flex-1 flex flex-col items-center justify-center bg-black/40 backdrop-blur-xl rounded-2xl p-6 space-y-8">
-              {/* Remix Presets */}
-              <div className="flex items-center space-x-8">
+            <div className="flex-1 flex flex-col items-center justify-center bg-black/40 backdrop-blur-xl border border-white/20 p-8 space-y-6">
+              {/* Remix Presets - Tighter spacing, perfect squares */}
+              <div className="flex items-center space-x-2">
                 {remixCovers.map((remix) => (
                   <div key={remix.id}>
                     {remix.image ? (
-                      <div
-                        className="relative w-36 h-36 rounded-2xl overflow-hidden cursor-pointer group transition-all duration-300 hover:scale-105"
-                        style={{ boxShadow: remix.shadowColor ? `0 8px 40px -10px ${remix.shadowColor}` : 'none' }}
-                      >
+                      <div className="relative w-24 h-24 overflow-hidden cursor-pointer group transition-all duration-300 hover:scale-105">
                         <img 
                           src={remix.image} 
                           alt={remix.title}
                           className="w-full h-full object-cover"
                         />
                         <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <span className="text-white font-bold text-lg">{remix.title}</span>
+                          <span className="text-white font-bold text-xs">{remix.title}</span>
                         </div>
                       </div>
                     ) : (
-                      <div className="w-36 h-36 bg-neutral-800/80 rounded-2xl flex items-center justify-center text-neutral-400 font-semibold cursor-pointer hover:bg-neutral-700/80 transition-colors">
+                      <div className="w-24 h-24 bg-neutral-800/80 flex items-center justify-center text-neutral-400 font-semibold cursor-pointer hover:bg-neutral-700/80 transition-colors text-xs">
                         {remix.title}
                       </div>
                     )}
@@ -192,16 +189,16 @@ const Studio = () => {
                 ))}
               </div>
 
-              {/* Upload Area */}
+              {/* Upload Area - Sharp edges, reduced height */}
               <div 
-                className="w-full max-w-xl border-2 border-dashed border-neutral-600 rounded-xl p-10 flex items-center justify-center cursor-pointer hover:border-neutral-500 transition-colors"
+                className="w-full max-w-2xl border-2 border-dashed border-neutral-600 p-8 flex items-center justify-center cursor-pointer hover:border-neutral-500 transition-colors"
                 onClick={() => fileInputRef.current?.click()}
               >
                 <div className="text-center text-neutral-400">
-                  <Upload className="w-8 h-8 mx-auto mb-2" />
-                  <p className="font-semibold">UPLOAD MUSIC to remix</p>
+                  <Upload className="w-6 h-6 mx-auto mb-2" />
+                  <p className="font-semibold text-sm">UPLOAD MUSIC to remix</p>
                   {uploadedFile && (
-                    <p className="text-sm text-green-400 mt-2">
+                    <p className="text-xs text-green-400 mt-2">
                       {uploadedFile.name}
                     </p>
                   )}
@@ -215,21 +212,21 @@ const Studio = () => {
                 className="hidden"
               />
 
-              {/* Chat Input Bar */}
+              {/* Chat Input Bar - Sharp edges, transparent bg, white border, centered text */}
               <div className="w-full max-w-2xl relative">
                 <Input
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="CHAT"
-                  className="w-full h-16 bg-neutral-800/80 border-none rounded-full text-white placeholder-neutral-400 text-center text-lg tracking-wider"
+                  className="w-full h-12 bg-transparent border-2 border-white text-white placeholder-neutral-400 text-center text-base tracking-wider focus:border-white/80 focus:ring-0"
                 />
                 <Button
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim() && !uploadedFile}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-white text-black hover:bg-gray-200 h-10 w-10 p-0 rounded-full shadow-lg disabled:opacity-50"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-black hover:bg-gray-200 h-8 w-8 p-0 shadow-lg disabled:opacity-50"
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="w-3 h-3" />
                 </Button>
               </div>
 
@@ -238,14 +235,14 @@ const Studio = () => {
             /* Chat View */
             <>
               {/* Messages Display */}
-              <div className="flex-1 bg-black/40 backdrop-blur-xl rounded-2xl p-6 min-h-0">
+              <div className="flex-1 bg-black/40 backdrop-blur-xl border border-white/20 p-6 min-h-0">
                 <ScrollArea className="h-full pr-4 -mr-4">
                   <div className="h-full flex flex-col">
                     {/* Chat Header */}
                     <div className="p-4 border-b border-white/10">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-white/10 rounded-xl flex items-center justify-center">
+                          <div className="w-8 h-8 bg-white/10 flex items-center justify-center">
                             <Sparkles className="w-4 h-4 text-white" />
                           </div>
                           <div>
@@ -257,7 +254,7 @@ const Studio = () => {
                           size="sm" 
                           variant="ghost"
                           onClick={() => setChatStarted(false)}
-                          className="text-white/70 hover:text-white hover:bg-white/10 rounded-xl text-xs h-8"
+                          className="text-white/70 hover:text-white hover:bg-white/10 text-xs h-8"
                         >
                           New Session
                         </Button>
@@ -272,7 +269,7 @@ const Studio = () => {
                           className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
                         >
                           <div
-                            className={`max-w-[80%] p-3 rounded-2xl backdrop-blur-sm text-sm ${
+                            className={`max-w-[80%] p-3 backdrop-blur-sm text-sm ${
                               message.type === 'user'
                                 ? 'bg-white text-black border border-gray-300'
                                 : 'bg-white/10 text-white border border-white/20'
@@ -288,12 +285,12 @@ const Studio = () => {
 
                       {isLoading && (
                         <div className="flex justify-start">
-                          <div className="bg-white/10 border border-white/20 p-3 rounded-2xl backdrop-blur-sm">
+                          <div className="bg-white/10 border border-white/20 p-3 backdrop-blur-sm">
                             <div className="flex items-center space-x-2">
                               <div className="flex space-x-1">
-                                <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
-                                <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
-                                <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
+                                <div className="w-1.5 h-1.5 bg-gray-400"></div>
+                                <div className="w-1.5 h-1.5 bg-gray-400"></div>
+                                <div className="w-1.5 h-1.5 bg-gray-400"></div>
                               </div>
                               <span className="text-white/60 text-xs">AI is thinking...</span>
                             </div>
@@ -307,8 +304,8 @@ const Studio = () => {
                 </ScrollArea>
               </div>
 
-              {/* Chat Input Island */}
-              <div className="bg-black/40 backdrop-blur-xl rounded-2xl p-4">
+              {/* Chat Input Island - Sharp edges, transparent bg, white border, centered text */}
+              <div className="bg-black/40 backdrop-blur-xl border border-white/20 p-4">
                 <div className="flex items-end space-x-3">
                   <div className="flex-1">
                     <Textarea
@@ -316,13 +313,13 @@ const Studio = () => {
                       onChange={(e) => setInputValue(e.target.value)}
                       onKeyPress={handleKeyPress}
                       placeholder="Send a message..."
-                      className="min-h-[50px] max-h-24 bg-white/10 border-white/20 text-white placeholder-white/50 resize-none focus:border-white/40 focus:ring-white/20 rounded-2xl backdrop-blur-sm"
+                      className="min-h-[50px] max-h-24 bg-transparent border-2 border-white text-white placeholder-white/50 resize-none focus:border-white/80 focus:ring-0 text-center"
                     />
                   </div>
                   <Button
                     onClick={handleSendMessage}
                     disabled={!inputValue.trim() || isLoading}
-                    className="bg-white text-black hover:bg-gray-200 h-[50px] px-4 rounded-2xl shadow-lg"
+                    className="bg-white text-black hover:bg-gray-200 h-[50px] px-4 shadow-lg"
                   >
                     <Send className="w-4 h-4" />
                   </Button>
