@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react';
-import { gsap } from 'gsap';
 import { Link } from 'react-router-dom';
 import { Send, Music, Mic, Upload, Settings, User, Plus, Menu, X, Sparkles, AudioWaveform as Waveform, Headphones } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -28,29 +27,6 @@ const Studio = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // Entrance animation for all islands
-    gsap.fromTo(containerRef.current, 
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }
-    );
-
-    // Stagger animation for islands
-    gsap.fromTo('.island', 
-      { opacity: 0, y: 30, scale: 0.95 },
-      { 
-        opacity: 1, 
-        y: 0, 
-        scale: 1, 
-        duration: 0.6, 
-        stagger: 0.1,
-        ease: "back.out(1.7)",
-        delay: 0.2
-      }
-    );
-  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -91,10 +67,7 @@ const Studio = () => {
   };
 
   return (
-    <div 
-      ref={containerRef} 
-      className="h-screen bg-black p-3 overflow-hidden"
-    >
+    <div className="h-screen bg-black p-3 overflow-hidden">
       {/* Subtle background pattern */}
       <div className="fixed inset-0 opacity-5">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_50%)]"></div>
@@ -102,12 +75,12 @@ const Studio = () => {
 
       <div className="relative z-10 h-full flex gap-3">
         {/* Sidebar Island - Left */}
-        <div className={`island transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-14'}`}>
+        <div className={`${sidebarOpen ? 'w-64' : 'w-14'}`}>
           <div className="h-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
-            {/* Glassmorphic overlay */}
+            {/* Static glassmorphic overlay */}
             <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-white/2 to-transparent"></div>
             
-            {/* Subtle animated border */}
+            {/* Static border */}
             <div className="absolute inset-0 rounded-2xl">
               <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
               <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-transparent via-white/20 to-transparent"></div>
@@ -120,7 +93,7 @@ const Studio = () => {
               <div className="p-4 border-b border-white/10">
                 <div className="flex items-center justify-between">
                   {sidebarOpen && (
-                    <Link to="/" className="text-lg font-bold text-white hover:text-gray-300 transition-colors">
+                    <Link to="/" className="text-lg font-bold text-white hover:text-gray-300">
                       remix.
                     </Link>
                   )}
@@ -140,28 +113,28 @@ const Studio = () => {
                 <div className="space-y-1">
                   <Button
                     variant="ghost"
-                    className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 h-9`}
+                    className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-lg h-9`}
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     {sidebarOpen && "New Session"}
                   </Button>
                   <Button
                     variant="ghost"
-                    className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 h-9`}
+                    className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-lg h-9`}
                   >
                     <Music className="w-4 h-4 mr-2" />
                     {sidebarOpen && "My Remixes"}
                   </Button>
                   <Button
                     variant="ghost"
-                    className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 h-9`}
+                    className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-lg h-9`}
                   >
                     <Upload className="w-4 h-4 mr-2" />
                     {sidebarOpen && "Upload Audio"}
                   </Button>
                   <Button
                     variant="ghost"
-                    className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 h-9`}
+                    className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-lg h-9`}
                   >
                     <Waveform className="w-4 h-4 mr-2" />
                     {sidebarOpen && "Audio Library"}
@@ -173,7 +146,7 @@ const Studio = () => {
                     <h3 className="text-xs font-medium text-white/50 uppercase tracking-wider mb-2">Recent Projects</h3>
                     <div className="space-y-1">
                       {['Synthwave Remix', 'Lo-fi Beats', 'Electronic Mix'].map((project, i) => (
-                        <div key={i} className="p-2 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors cursor-pointer">
+                        <div key={i} className="p-2 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 cursor-pointer">
                           <div className="flex items-center space-x-2">
                             <div className="w-6 h-6 bg-gradient-to-br from-gray-600 to-gray-800 rounded-md flex items-center justify-center">
                               <Headphones className="w-3 h-3 text-white" />
@@ -214,12 +187,12 @@ const Studio = () => {
         {/* Main Content Area - Compact Layout */}
         <div className="flex-1 flex flex-col gap-3 min-h-0">
           {/* Chat Island - Takes most space */}
-          <div className="island flex-1 min-h-0">
+          <div className="flex-1 min-h-0">
             <div className="h-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
-              {/* Glassmorphic overlay */}
+              {/* Static glassmorphic overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-white/2 to-transparent"></div>
               
-              {/* Subtle animated border */}
+              {/* Static border */}
               <div className="absolute inset-0 rounded-2xl">
                 <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
                 <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-transparent via-white/20 to-transparent"></div>
@@ -287,9 +260,9 @@ const Studio = () => {
                         <div className="bg-white/10 border border-white/20 p-3 rounded-xl backdrop-blur-sm">
                           <div className="flex items-center space-x-2">
                             <div className="flex space-x-1">
-                              <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse"></div>
-                              <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse delay-75"></div>
-                              <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse delay-150"></div>
+                              <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
+                              <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
+                              <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
                             </div>
                             <span className="text-white/60 text-xs">AI is thinking...</span>
                           </div>
@@ -305,12 +278,12 @@ const Studio = () => {
           </div>
 
           {/* Compact Input Island */}
-          <div className="island">
+          <div>
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-4">
-              {/* Glassmorphic overlay */}
+              {/* Static glassmorphic overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-white/2 to-transparent rounded-2xl"></div>
               
-              {/* Subtle animated border */}
+              {/* Static border */}
               <div className="absolute inset-0 rounded-2xl">
                 <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
                 <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-transparent via-white/20 to-transparent"></div>
