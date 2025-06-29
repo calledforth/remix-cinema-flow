@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
+import { FileUpload } from '@/components/ui/file-upload';
+import RemixCover from "@/components/ui/RemixCover";
 
 interface Message {
   id: string;
@@ -36,10 +38,9 @@ const Studio = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setUploadedFile(file);
+  const handleFileUpload = (files: File[]) => {
+    if (files.length > 0) {
+      setUploadedFile(files[0]);
     }
   };
 
@@ -164,55 +165,27 @@ const Studio = () => {
         <div className="flex-1 flex flex-col gap-4 min-h-0">
           {!chatStarted ? (
             /* Initial Compact Layout - Centered */
-            <div className="flex-1 flex flex-col items-center justify-center bg-black/40 backdrop-blur-xl border border-white/20 p-8 space-y-6">
-              {/* Remix Presets - Tighter spacing, perfect squares */}
-              <div className="flex items-center space-x-2">
+            <div className="flex-1 flex flex-col items-center justify-center bg-black/40 backdrop-blur-xl p-8 space-y-6">
+              {/* Remix Presets - Larger covers with intense gradients */}
+              <div className="flex items-center space-x-4">
                 {remixCovers.map((remix) => (
-                  <div key={remix.id}>
-                    {remix.image ? (
-                      <div className="relative w-24 h-24 overflow-hidden cursor-pointer group transition-all duration-300 hover:scale-105">
-                        <img 
-                          src={remix.image} 
-                          alt={remix.title}
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <span className="text-white font-bold text-xs">{remix.title}</span>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="w-24 h-24 bg-neutral-800/80 flex items-center justify-center text-neutral-400 font-semibold cursor-pointer hover:bg-neutral-700/80 transition-colors text-xs">
-                        {remix.title}
-                      </div>
-                    )}
-                  </div>
+                  <RemixCover key={remix.id} remix={remix} />
                 ))}
               </div>
 
-              {/* Upload Area - Sharp edges, reduced height */}
-              <div 
-                className="w-full max-w-2xl border-2 border-dashed border-neutral-600 p-8 flex items-center justify-center cursor-pointer hover:border-neutral-500 transition-colors"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <div className="text-center text-neutral-400">
-                  <Upload className="w-6 h-6 mx-auto mb-2" />
-                  <p className="font-semibold text-sm">UPLOAD MUSIC to remix</p>
-                  {uploadedFile && (
-                    <p className="text-xs text-green-400 mt-2">
-                      {uploadedFile.name}
+              {/* Upload Area - Using FileUpload component */}
+              <div className="w-full max-w-2xl pt-10">
+                <FileUpload onChange={handleFileUpload} />
+                {uploadedFile && (
+                  <div className="mt-4 text-center">
+                    <p className="text-green-400 text-sm">
+                      Ready to remix: {uploadedFile.name}
                     </p>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="audio/*"
-                onChange={handleFileUpload}
-                className="hidden"
-              />
 
-              {/* Chat Input Bar - Sharp edges, transparent bg, white border, centered text */}
+              {/* Chat Input Bar */}
               <div className="w-full max-w-2xl relative">
                 <Input
                   value={inputValue}
@@ -232,33 +205,30 @@ const Studio = () => {
 
             </div>
           ) : (
-            /* Chat View */
+            /* Chat View - No borders */
             <>
               {/* Messages Display */}
-              <div className="flex-1 bg-black/40 backdrop-blur-xl border border-white/20 p-6 min-h-0">
+              <div className="flex-1 bg-black/40 backdrop-blur-xl p-6 min-h-0">
                 <ScrollArea className="h-full pr-4 -mr-4">
                   <div className="h-full flex flex-col">
                     {/* Chat Header */}
-                    <div className="p-4 border-b border-white/10">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-white/10 flex items-center justify-center">
-                            <Sparkles className="w-4 h-4 text-white" />
-                          </div>
-                          <div>
-                            <h1 className="text-base font-semibold text-white">AI Music Studio</h1>
-                            <p className="text-xs text-white/60">Transform your music with AI</p>
-                          </div>
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 bg-white/10 flex items-center justify-center">
+                          <Sparkles className="w-4 h-4 text-white" />
                         </div>
-                        <Button 
-                          size="sm" 
-                          variant="ghost"
-                          onClick={() => setChatStarted(false)}
-                          className="text-white/70 hover:text-white hover:bg-white/10 text-xs h-8"
-                        >
-                          New Session
-                        </Button>
+                        <div>
+                          <h2 className="text-white font-semibold text-sm">Remix Studio</h2>
+                          <p className="text-white/60 text-xs">AI-powered music remixing</p>
+                        </div>
                       </div>
+                      <Button
+                        variant="ghost"
+                        onClick={() => setChatStarted(false)}
+                        className="text-white/70 hover:text-white hover:bg-white/10 text-xs h-8"
+                      >
+                        New Session
+                      </Button>
                     </div>
 
                     {/* Messages Area */}
@@ -271,21 +241,21 @@ const Studio = () => {
                           <div
                             className={`max-w-[80%] p-3 backdrop-blur-sm text-sm ${
                               message.type === 'user'
-                                ? 'bg-white text-black border border-gray-300'
-                                : 'bg-white/10 text-white border border-white/20'
+                                ? 'bg-white text-black'
+                                : 'bg-white/10 text-white'
                             }`}
                           >
-                            <p className="whitespace-pre-wrap">{message.content}</p>
-                            <div className="mt-1 text-xs text-white/50">
+                            <p>{message.content}</p>
+                            <p className="text-xs opacity-60 mt-1">
                               {message.timestamp.toLocaleTimeString()}
-                            </div>
+                            </p>
                           </div>
                         </div>
                       ))}
 
                       {isLoading && (
                         <div className="flex justify-start">
-                          <div className="bg-white/10 border border-white/20 p-3 backdrop-blur-sm">
+                          <div className="bg-white/10 p-3 backdrop-blur-sm">
                             <div className="flex items-center space-x-2">
                               <div className="flex space-x-1">
                                 <div className="w-1.5 h-1.5 bg-gray-400"></div>
@@ -304,8 +274,8 @@ const Studio = () => {
                 </ScrollArea>
               </div>
 
-              {/* Chat Input Island - Sharp edges, transparent bg, white border, centered text */}
-              <div className="bg-black/40 backdrop-blur-xl border border-white/20 p-4">
+              {/* Chat Input - No borders */}
+              <div className="bg-black/40 backdrop-blur-xl p-4">
                 <div className="flex items-end space-x-3">
                   <div className="flex-1">
                     <Textarea
