@@ -298,50 +298,50 @@ const Index = () => {
         <div className="absolute inset-0 bg-black/30"></div>
       </div>
 
+      {/* Navigation - FIXED ABOVE EVERYTHING */}
+      <nav 
+        ref={navRef}
+        className="fixed top-0 left-0 right-0 z-[9999] p-6 opacity-0"
+      >
+        <div className="flex justify-between items-center max-w-7xl mx-auto">
+          {/* Left side - Only title */}
+          <div className="text-white font-bold text-xl">remix.</div>
+          
+          {/* Right side - All other elements */}
+          <div className="flex items-center space-x-8">
+            <div className="hidden md:flex space-x-8 text-white/80">
+              <a href="#about" className="hover:text-white transition-colors">about</a>
+              <a href="#features" className="hover:text-white transition-colors">features</a>
+              <a href="#contact" className="hover:text-white transition-colors">contact</a>
+            </div>
+            
+            {/* Glass Blur Button - Same style as feature cards */}
+            <Link 
+              to="/studio"
+              className="relative bg-white/10 backdrop-blur-md border border-white/20 text-white px-6 py-3 font-medium hover:bg-white/20 transition-all duration-300 overflow-hidden group"
+            >
+              {/* Subtle gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+              
+              {/* Button text */}
+              <span className="relative z-10">start remixing</span>
+              
+              {/* Decorative border */}
+              <div className="absolute inset-1 border border-white/10 pointer-events-none z-10" />
+              
+              {/* Animated border elements */}
+              <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+              <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-transparent via-white/30 to-transparent"></div>
+              <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
+              <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-t from-transparent via-white/30 to-transparent"></div>
+            </Link>
+          </div>
+        </div>
+      </nav>
+
       {/* ScrollSmoother Wrapper */}
       <div id="smooth-wrapper" ref={smoothWrapperRef} className="relative z-10">
         <div id="smooth-content" ref={smoothContentRef}>
-          {/* Navigation - COMPLETELY TRANSPARENT */}
-          <nav 
-            ref={navRef}
-            className="fixed top-0 left-0 right-0 z-50 p-6 opacity-0"
-          >
-            <div className="flex justify-between items-center max-w-7xl mx-auto">
-              {/* Left side - Only title */}
-              <div className="text-white font-bold text-xl">remix.</div>
-              
-              {/* Right side - All other elements */}
-              <div className="flex items-center space-x-8">
-                <div className="hidden md:flex space-x-8 text-white/80">
-                  <a href="#about" className="hover:text-white transition-colors">about</a>
-                  <a href="#features" className="hover:text-white transition-colors">features</a>
-                  <a href="#contact" className="hover:text-white transition-colors">contact</a>
-                </div>
-                
-                {/* Glass Blur Button - Same style as feature cards */}
-                <Link 
-                  to="/studio"
-                  className="relative bg-white/10 backdrop-blur-md border border-white/20 text-white px-6 py-3 font-medium hover:bg-white/20 transition-all duration-300 overflow-hidden group"
-                >
-                  {/* Subtle gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
-                  
-                  {/* Button text */}
-                  <span className="relative z-10">start remixing</span>
-                  
-                  {/* Decorative border */}
-                  <div className="absolute inset-1 border border-white/10 pointer-events-none z-10" />
-                  
-                  {/* Animated border elements */}
-                  <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
-                  <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-transparent via-white/30 to-transparent"></div>
-                  <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
-                  <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-t from-transparent via-white/30 to-transparent"></div>
-                </Link>
-              </div>
-            </div>
-          </nav>
-
           {/* Hero Section */}
           <div ref={heroRef} className="relative h-screen flex items-center justify-center">
             <div className="text-center z-10 w-full px-8">
@@ -418,28 +418,48 @@ const Index = () => {
                 ))}
               </div>
 
-              {/* Completion Text - ONLY APPEARS AFTER 5TH CARD */}
-              <div ref={completionTextRef} className="max-w-md pt-16">
-                <h3 className="text-4xl font-bold text-white mb-6 italic">
-                  The Complete Solution
-                </h3>
-                <p className="text-lg text-white/80 leading-relaxed mb-8 italic">
-                  Everything you need to transform your creative vision into reality. 
-                  From AI-powered tools to seamless collaboration, we've built the 
-                  ultimate platform for digital artists and creators.
-                </p>
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-white/40 rounded-full"></div>
-                    <span className="text-white/70 italic">5 powerful AI tools</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-white/40 rounded-full"></div>
-                    <span className="text-white/70 italic">Real-time collaboration</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-white/40 rounded-full"></div>
-                    <span className="text-white/70 italic">Cloud-based rendering</span>
+              {/* Enhanced Completion Text Container - GLASSMORPHIC WITH SHIMMER */}
+              <div 
+                ref={completionTextRef} 
+                className="relative max-w-lg pt-16 bg-white/5 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl overflow-hidden"
+              >
+                {/* Glassmorphic background with gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent"></div>
+                
+                {/* Shimmer border animation */}
+                <div className="absolute inset-0 rounded-2xl">
+                  <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/40 to-transparent animate-pulse"></div>
+                  <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-transparent via-white/40 to-transparent animate-pulse"></div>
+                  <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/40 to-transparent animate-pulse"></div>
+                  <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-t from-transparent via-white/40 to-transparent animate-pulse"></div>
+                </div>
+
+                {/* Inner decorative border */}
+                <div className="absolute inset-4 border border-white/10 rounded-xl pointer-events-none"></div>
+
+                {/* Content */}
+                <div className="relative z-10">
+                  <h3 className="text-5xl font-bold text-white mb-6 italic uppercase tracking-wide">
+                    THE COMPLETE SOLUTION
+                  </h3>
+                  <p className="text-xl text-white/90 leading-relaxed mb-8 italic font-medium">
+                    Everything you need to transform your creative vision into reality. 
+                    From AI-powered tools to seamless collaboration, we've built the 
+                    ultimate platform for digital artists and creators.
+                  </p>
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-3 h-3 bg-white/60 rounded-full"></div>
+                      <span className="text-white/80 italic text-lg font-medium">5 POWERFUL AI TOOLS</span>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      <div className="w-3 h-3 bg-white/60 rounded-full"></div>
+                      <span className="text-white/80 italic text-lg font-medium">REAL-TIME COLLABORATION</span>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      <div className="w-3 h-3 bg-white/60 rounded-full"></div>
+                      <span className="text-white/80 italic text-lg font-medium">CLOUD-BASED RENDERING</span>
+                    </div>
                   </div>
                 </div>
               </div>
