@@ -1,6 +1,7 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Send, Music, Mic, Upload, Settings, User, Plus, Menu, X, Sparkles, AudioWaveform as Waveform, Headphones } from 'lucide-react';
+import { Send, Music, Mic, Upload, Settings, User, Plus, Menu, X, Sparkles, AudioWaveform as Waveform, Headphones, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -15,43 +16,63 @@ interface Message {
 }
 
 const Studio = () => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      type: 'ai',
-      content: 'Welcome to the AI Music Remix Studio! I can help you create, remix, and transform music. What would you like to work on today?',
-      timestamp: new Date()
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [chatStarted, setChatStarted] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const remixCovers = [
+    { id: 1, title: 'REMIX1', image: '/assets/car.jpeg', genre: 'Electronic' },
+    { id: 2, title: 'REMIX', image: '/assets/cor.jpeg', genre: 'Hip Hop' },
+    { id: 3, title: 'REMIX', image: '/assets/carlhauser-vGiJ-tW3tZ4-unsplash.jpg', genre: 'Pop' },
+    { id: 4, title: 'REMIX', image: '/assets/download (1).jpg', genre: 'Rock' },
+    { id: 5, title: 'See all', image: null, genre: null },
+  ];
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setUploadedFile(file);
+    }
+  };
+
   const handleSendMessage = async () => {
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() && !uploadedFile) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
       type: 'user',
-      content: inputValue,
+      content: uploadedFile 
+        ? `Uploaded: ${uploadedFile.name} - ${inputValue || 'Ready to remix!'}`
+        : inputValue,
       timestamp: new Date()
     };
 
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
+    setUploadedFile(null);
     setIsLoading(true);
+    setChatStarted(true);
+
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
 
     // Simulate AI response
     setTimeout(() => {
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'ai',
-        content: "I understand you want to work on that! Let me help you create something amazing. What style or genre are you looking for?",
+        content: "Great! I've received your audio file. I can help you remix it in various styles. What kind of remix are you looking for? Electronic, Hip Hop, Pop, or something else?",
         timestamp: new Date()
       };
       setMessages(prev => [...prev, aiMessage]);
@@ -74,20 +95,11 @@ const Studio = () => {
       </div>
 
       <div className="relative z-10 h-full flex gap-3">
-        {/* Sidebar Island - Left */}
-        <div className={`${sidebarOpen ? 'w-64' : 'w-14'}`}>
+        {/* Sidebar Island */}
+        <div className={`${sidebarOpen ? 'w-64' : 'w-14'} transition-all duration-300`}>
           <div className="h-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
-            {/* Static glassmorphic overlay */}
             <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-white/2 to-transparent"></div>
             
-            {/* Static border */}
-            <div className="absolute inset-0 rounded-2xl">
-              <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-              <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-transparent via-white/20 to-transparent"></div>
-              <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
-              <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-t from-transparent via-white/20 to-transparent"></div>
-            </div>
-
             <div className="relative z-10 h-full flex flex-col">
               {/* Header */}
               <div className="p-4 border-b border-white/10">
@@ -130,37 +142,9 @@ const Studio = () => {
                     className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-lg h-9`}
                   >
                     <Upload className="w-4 h-4 mr-2" />
-                    {sidebarOpen && "Upload Audio"}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className={`w-full ${sidebarOpen ? 'justify-start' : 'justify-center'} text-left text-white/70 hover:text-white hover:bg-white/10 rounded-lg h-9`}
-                  >
-                    <Waveform className="w-4 h-4 mr-2" />
-                    {sidebarOpen && "Audio Library"}
+                    {sidebarOpen && "Library"}
                   </Button>
                 </div>
-
-                {sidebarOpen && (
-                  <div className="mt-6">
-                    <h3 className="text-xs font-medium text-white/50 uppercase tracking-wider mb-2">Recent Projects</h3>
-                    <div className="space-y-1">
-                      {['Synthwave Remix', 'Lo-fi Beats', 'Electronic Mix'].map((project, i) => (
-                        <div key={i} className="p-2 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 cursor-pointer">
-                          <div className="flex items-center space-x-2">
-                            <div className="w-6 h-6 bg-gradient-to-br from-gray-600 to-gray-800 rounded-md flex items-center justify-center">
-                              <Headphones className="w-3 h-3 text-white" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-xs font-medium text-white truncate">{project}</p>
-                              <p className="text-xs text-white/50">2h ago</p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Footer */}
@@ -184,121 +168,180 @@ const Studio = () => {
           </div>
         </div>
 
-        {/* Main Content Area - Compact Layout */}
+        {/* Main Content Area */}
         <div className="flex-1 flex flex-col gap-3 min-h-0">
-          {/* Chat Island - Takes most space */}
-          <div className="flex-1 min-h-0">
-            <div className="h-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
-              {/* Static glassmorphic overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-white/2 to-transparent"></div>
-              
-              {/* Static border */}
-              <div className="absolute inset-0 rounded-2xl">
-                <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-                <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-transparent via-white/20 to-transparent"></div>
-                <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
-                <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-t from-transparent via-white/20 to-transparent"></div>
+          {!chatStarted ? (
+            /* Initial Layout - Before Chat Starts */
+            <>
+              {/* Remix Covers Row */}
+              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-6">
+                <div className="flex items-center space-x-4 overflow-x-auto">
+                  {remixCovers.map((remix) => (
+                    <div key={remix.id} className="flex-shrink-0">
+                      {remix.image ? (
+                        <div className="w-32 h-32 bg-gray-600 rounded-2xl overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-200 group">
+                          <img 
+                            src={remix.image} 
+                            alt={remix.title}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                            <Play className="w-8 h-8 text-white" />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="w-32 h-32 bg-white/10 rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center cursor-pointer hover:bg-white/15 transition-colors duration-200">
+                          <span className="text-white/70 text-sm font-medium">{remix.title}</span>
+                        </div>
+                      )}
+                      <div className="mt-2 text-center">
+                        <p className="text-white text-sm font-medium">{remix.title}</p>
+                        {remix.genre && (
+                          <p className="text-white/50 text-xs">{remix.genre}</p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <div className="relative z-10 h-full flex flex-col">
-                {/* Compact Chat Header */}
-                <div className="p-4 border-b border-white/10">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-gray-600 to-gray-800 rounded-xl flex items-center justify-center">
-                        <Sparkles className="w-4 h-4 text-white" />
-                      </div>
-                      <div>
-                        <h1 className="text-base font-semibold text-white">AI Music Studio</h1>
-                        <p className="text-xs text-white/60">Transform your music with AI</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Button size="sm" variant="ghost" className="text-white/70 hover:text-white hover:bg-white/10 rounded-lg text-xs h-8">
-                        Export
-                      </Button>
-                      <Button size="sm" className="bg-white text-black hover:bg-gray-200 rounded-lg text-xs h-8">
-                        Share
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Messages Area - Compact */}
-                <ScrollArea className="flex-1 p-4">
-                  <div className="space-y-4">
-                    {messages.map((message) => (
-                      <div
-                        key={message.id}
-                        className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                      >
-                        <div
-                          className={`max-w-[80%] p-3 rounded-xl backdrop-blur-sm text-sm ${
-                            message.type === 'user'
-                              ? 'bg-white text-black border border-gray-300'
-                              : 'bg-white/10 text-white border border-white/20'
-                          }`}
-                        >
-                          <p className="whitespace-pre-wrap">{message.content}</p>
-                          {message.audioUrl && (
-                            <div className="mt-2 p-2 bg-black/30 rounded-lg border border-white/10">
-                              <div className="flex items-center space-x-2">
-                                <Mic className="w-3 h-3 text-gray-400" />
-                                <span className="text-xs text-white/80">Audio generated</span>
-                              </div>
-                            </div>
-                          )}
-                          <div className="mt-1 text-xs text-white/50">
-                            {message.timestamp.toLocaleTimeString()}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-
-                    {isLoading && (
-                      <div className="flex justify-start">
-                        <div className="bg-white/10 border border-white/20 p-3 rounded-xl backdrop-blur-sm">
-                          <div className="flex items-center space-x-2">
-                            <div className="flex space-x-1">
-                              <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
-                              <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
-                              <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
-                            </div>
-                            <span className="text-white/60 text-xs">AI is thinking...</span>
-                          </div>
-                        </div>
+              {/* Upload Area */}
+              <div className="flex-1 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-8">
+                <div className="h-full flex items-center justify-center">
+                  <div 
+                    className="w-full max-w-md border-2 border-dashed border-white/30 rounded-3xl p-12 text-center cursor-pointer hover:border-white/50 hover:bg-white/5 transition-all duration-200"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Upload className="w-12 h-12 text-white/50 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold text-white mb-2">UPLOAD MUSIC to remix</h3>
+                    <p className="text-white/60 text-sm">
+                      Drag and drop your audio file here or click to browse
+                    </p>
+                    <p className="text-white/40 text-xs mt-2">
+                      Supports MP3, WAV, FLAC files
+                    </p>
+                    {uploadedFile && (
+                      <div className="mt-4 p-3 bg-white/10 rounded-lg">
+                        <p className="text-white text-sm">📁 {uploadedFile.name}</p>
                       </div>
                     )}
-
-                    <div ref={messagesEndRef} />
                   </div>
-                </ScrollArea>
-              </div>
-            </div>
-          </div>
-
-          {/* Compact Input Island */}
-          <div>
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-4">
-              {/* Static glassmorphic overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-white/2 to-transparent rounded-2xl"></div>
-              
-              {/* Static border */}
-              <div className="absolute inset-0 rounded-2xl">
-                <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-                <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-transparent via-white/20 to-transparent"></div>
-                <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
-                <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-t from-transparent via-white/20 to-transparent"></div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="audio/*"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                </div>
               </div>
 
-              <div className="relative z-10">
+              {/* Chat Input */}
+              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-4">
                 <div className="flex items-end space-x-3">
                   <div className="flex-1">
                     <Textarea
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      placeholder="Describe the music you want to create or remix..."
+                      placeholder="Describe how you want to remix your music..."
+                      className="min-h-[50px] max-h-24 bg-white/10 border-white/20 text-white placeholder-white/50 resize-none focus:border-white/40 focus:ring-white/20 rounded-xl backdrop-blur-sm text-sm"
+                    />
+                  </div>
+                  <Button
+                    onClick={handleSendMessage}
+                    disabled={!inputValue.trim() && !uploadedFile}
+                    className="bg-white text-black hover:bg-gray-200 h-[50px] px-4 rounded-xl shadow-lg disabled:opacity-50"
+                  >
+                    <Send className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            </>
+          ) : (
+            /* Chat Interface - After Chat Starts */
+            <>
+              {/* Chat Messages */}
+              <div className="flex-1 min-h-0">
+                <div className="h-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+                  <div className="relative z-10 h-full flex flex-col">
+                    {/* Chat Header */}
+                    <div className="p-4 border-b border-white/10">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-gradient-to-br from-gray-600 to-gray-800 rounded-xl flex items-center justify-center">
+                            <Sparkles className="w-4 h-4 text-white" />
+                          </div>
+                          <div>
+                            <h1 className="text-base font-semibold text-white">AI Music Studio</h1>
+                            <p className="text-xs text-white/60">Transform your music with AI</p>
+                          </div>
+                        </div>
+                        <Button 
+                          size="sm" 
+                          variant="ghost"
+                          onClick={() => setChatStarted(false)}
+                          className="text-white/70 hover:text-white hover:bg-white/10 rounded-lg text-xs h-8"
+                        >
+                          New Session
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Messages Area */}
+                    <ScrollArea className="flex-1 p-4">
+                      <div className="space-y-4">
+                        {messages.map((message) => (
+                          <div
+                            key={message.id}
+                            className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                          >
+                            <div
+                              className={`max-w-[80%] p-3 rounded-xl backdrop-blur-sm text-sm ${
+                                message.type === 'user'
+                                  ? 'bg-white text-black border border-gray-300'
+                                  : 'bg-white/10 text-white border border-white/20'
+                              }`}
+                            >
+                              <p className="whitespace-pre-wrap">{message.content}</p>
+                              <div className="mt-1 text-xs text-white/50">
+                                {message.timestamp.toLocaleTimeString()}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+
+                        {isLoading && (
+                          <div className="flex justify-start">
+                            <div className="bg-white/10 border border-white/20 p-3 rounded-xl backdrop-blur-sm">
+                              <div className="flex items-center space-x-2">
+                                <div className="flex space-x-1">
+                                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse"></div>
+                                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse"></div>
+                                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse"></div>
+                                </div>
+                                <span className="text-white/60 text-xs">AI is thinking...</span>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        <div ref={messagesEndRef} />
+                      </div>
+                    </ScrollArea>
+                  </div>
+                </div>
+              </div>
+
+              {/* Chat Input */}
+              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-4">
+                <div className="flex items-end space-x-3">
+                  <div className="flex-1">
+                    <Textarea
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      placeholder="Continue the conversation..."
                       className="min-h-[50px] max-h-24 bg-white/10 border-white/20 text-white placeholder-white/50 resize-none focus:border-white/40 focus:ring-white/20 rounded-xl backdrop-blur-sm text-sm"
                     />
                   </div>
@@ -310,23 +353,9 @@ const Studio = () => {
                     <Send className="w-4 h-4" />
                   </Button>
                 </div>
-                
-                <div className="flex items-center justify-between mt-3">
-                  <div className="flex space-x-2">
-                    <Button size="sm" variant="ghost" className="text-white/60 hover:text-white hover:bg-white/10 rounded-lg text-xs h-7">
-                      <Upload className="w-3 h-3 mr-1" />
-                      Upload
-                    </Button>
-                    <Button size="sm" variant="ghost" className="text-white/60 hover:text-white hover:bg-white/10 rounded-lg text-xs h-7">
-                      <Mic className="w-3 h-3 mr-1" />
-                      Record
-                    </Button>
-                  </div>
-                  <p className="text-xs text-white/40">Press Enter to send, Shift+Enter for new line</p>
-                </div>
               </div>
-            </div>
-          </div>
+            </>
+          )}
         </div>
       </div>
     </div>
