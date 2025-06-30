@@ -119,6 +119,11 @@ const Studio = () => {
     };
   }, []);
 
+  const handleRemoveFile = () => {
+    setUploadedFile(null);
+    setUploadedFileId(null);
+  };
+
   const handleFileUpload = async (files: File[]) => {
     if (files.length === 0) return;
     
@@ -550,13 +555,39 @@ const Studio = () => {
 
                 {/* Upload Area - Using FileUpload component */}
                 <div className="w-full max-w-2xl pt-10">
-                  <FileUpload onChange={handleFileUpload} />
-                  {uploadedFile && (
-                    <div className="mt-4 text-center">
-                      <p className="text-green-400 text-sm">
-                        Ready to remix: {uploadedFile.name}
-                        {uploadedFileId && <span className="ml-2">✅</span>}
-                      </p>
+                  {!uploadedFile ? (
+                    <FileUpload onChange={handleFileUpload} />
+                  ) : (
+                    <div className="bg-black border w-500px border-neutral-900 rounded-lg p-4 text-white relative overflow-hidden">
+                      {/* Moving border animation */}
+                      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/40 to-transparent animate-pulse"></div>
+                      <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-transparent via-white/40 to-transparent animate-pulse"></div>
+                      <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/40 to-transparent animate-pulse"></div>
+                      <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-t from-transparent via-white/40 to-transparent animate-pulse"></div>
+                      
+                      <div className="flex items-center space-x-4 relative z-10">
+                        <Music className="w-6 h-6 text-white/70" />
+                        <div className="flex-1">
+                          <p className="font-bold">{uploadedFile.name}</p>
+                          <p className="text-sm text-white/60">
+                            {(uploadedFile.size / (1024 * 1024)).toFixed(2)} MB
+                          </p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={handleRemoveFile}
+                          className="text-white/70 hover:text-white hover:bg-white/10 rounded-full absolute top-2 right-2"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      {uploadedFileId && (
+                        <div className="mt-3 flex items-center gap-2 text-green-400 relative z-10">
+                          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                          <span>Ready to remix</span>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

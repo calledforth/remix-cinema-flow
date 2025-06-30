@@ -51,29 +51,30 @@ const RemixCover: React.FC<{ remix: RemixCoverProps }> = ({ remix }) => {
 
   if (!remix.image) {
     return (
-      <div className="w-20 h-20 bg-neutral-800/80 flex items-center justify-center text-neutral-400 font-semibold cursor-pointer hover:bg-neutral-700/80 transition-colors text-xs">
+      <div className="w-20 h-20 bg-white/10 backdrop-blur-md border border-white/20 rounded-lg flex items-center justify-center text-neutral-300 font-semibold cursor-pointer hover:bg-white/20 transition-colors text-xs">
         {remix.title}
       </div>
     );
   }
 
   return (
-    <div
-      className="relative w-32 h-32 overflow-hidden cursor-pointer group transition-all duration-300 hover:scale-105"
-      style={{ boxShadow }}
-    >
-      <img
-        ref={imgRef}
-        src={remix.image}
-        alt={remix.title}
-        className="w-full h-full object-cover"
-      />
+    <div className="flex flex-col gap-2 items-center">
       <div
-        className="absolute inset-0 opacity-60 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-3"
-        style={{ background: gradient }}
+        className="relative w-32 h-32 overflow-hidden cursor-pointer group transition-all duration-300 hover:scale-105 rounded-lg"
+        style={{ boxShadow }}
       >
-        <span className="text-white font-bold text-sm">{remix.title}</span>
+        <img
+          ref={imgRef}
+          src={remix.image}
+          alt={remix.title}
+          className="w-full h-full object-cover"
+        />
+        <div
+          className="absolute inset-0 opacity-60 group-hover:opacity-100 transition-opacity"
+          style={{ background: gradient }}
+        ></div>
       </div>
+      <span className="text-white font-bold text-sm">{remix.title}</span>
     </div>
   );
 };

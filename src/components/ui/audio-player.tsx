@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, Download, Volume2, VolumeX } from 'lucide-react';
 import { Button } from './button';
@@ -113,8 +112,8 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
       
       // Create gradient for bars
       const gradient = ctx.createLinearGradient(0, canvas.height, 0, canvas.height - barHeight);
-      gradient.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
-      gradient.addColorStop(1, 'rgba(255, 255, 255, 0.8)');
+      gradient.addColorStop(0, 'rgba(135, 206, 250, 0.3)'); // Light blue with transparency
+      gradient.addColorStop(1, 'rgba(135, 206, 250, 0.8)'); // Light blue
       
       ctx.fillStyle = gradient;
       ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight);
@@ -238,7 +237,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
               {[...Array(40)].map((_, i) => (
                 <div
                   key={i}
-                  className="w-1 bg-white/20 rounded-full"
+                  className="w-1 bg-sky-300/30 rounded-full"
                   style={{
                     height: `${Math.random() * 60 + 20}%`,
                     animationDelay: `${i * 0.1}s`
