@@ -1,5 +1,6 @@
+
 'use client';
-import React, { useMemo, type JSX } from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'motion/react';
 import { cn } from '@/lib/utils';
 
@@ -13,39 +14,39 @@ interface TextShimmerProps {
 
 export function TextShimmer({
   children,
-  as: Component = 'p',
+  as: Component = 'span',
   className,
   duration = 2,
   spread = 2,
 }: TextShimmerProps) {
-  const MotionComponent = motion(Component as keyof JSX.IntrinsicElements);
+  const MotionComponent = motion(Component);
 
   const dynamicSpread = useMemo(() => {
-    return children.length * spread;
+    return Math.max(children.length * spread, 50);
   }, [children, spread]);
 
   return (
     <MotionComponent
       className={cn(
-        'relative inline-block bg-[length:250%_100%,auto] bg-clip-text',
-        'text-transparent [--base-color:#a1a1aa] [--base-gradient-color:#000]',
-        '[--bg:linear-gradient(90deg,#0000_calc(50%-var(--spread)),var(--base-gradient-color),#0000_calc(50%+var(--spread)))] [background-repeat:no-repeat,padding-box]',
-        'dark:[--base-color:#d4d4d4] dark:[--base-gradient-color:#ffffff] dark:[--bg:linear-gradient(90deg,rgba(0,0,0,0)_calc(50%-var(--spread)*1.2),rgba(255,255,255,0.5),rgba(0,0,0,0)_calc(50%+var(--spread)*1.2))]',
+        'relative inline-block',
+        'bg-gradient-to-r from-transparent via-white/80 to-transparent',
+        'bg-[length:200%_100%] bg-clip-text text-transparent',
+        'dark:from-transparent dark:via-white/90 dark:to-transparent',
         className
       )}
-      initial={{ backgroundPosition: '150% center' }}
-      animate={{ backgroundPosition: '-50% center' }}
+      initial={{ backgroundPosition: '-200% center' }}
+      animate={{ backgroundPosition: '200% center' }}
       transition={{
         repeat: Infinity,
         duration,
         ease: 'linear',
       }}
-      style={
-        {
-          '--spread': `${dynamicSpread}px`,
-          backgroundImage: `var(--bg), linear-gradient(var(--base-color), var(--base-color))`,
-        } as React.CSSProperties
-      }
+      style={{
+        backgroundImage: `linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 20%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.1) 80%, transparent 100%)`,
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
+      }}
     >
       {children}
     </MotionComponent>

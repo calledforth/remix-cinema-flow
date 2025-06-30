@@ -262,50 +262,134 @@ const Studio = () => {
 
   const renderMessage = (message: Message) => {
     if (message.type === 'status') {
-      console.log('🎨 Rendering status message:', message.content);
       return (
-        <div className="w-full py-2">
-          <div className="flex items-start gap-3">
-            {/* Simple processing indicator for non-completed status */}
-            {message.status !== 'completed' && message.status !== 'error' && (
-              <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse mt-2 flex-shrink-0" />
-            )}
-            
-            {/* Text content */}
-            <div className="flex-1">
-              <div className="bg-neutral-900/50 backdrop-blur-sm rounded-lg p-4 border border-neutral-700/60">
-                <div className="flex flex-col gap-3">
-                  {message.steps?.map((step, index) => (
-                    <TextShimmer 
-                      key={`${message.id}-${index}`}
-                      className="text-sm" 
-                      duration={3}
-                      spread={2}
-                    >
-                      {step}
-                    </TextShimmer>
-                  ))}
+        <div className="w-full py-4">
+          <div className="flex items-start gap-4">
+            {/* Modern status indicator */}
+            <div className="flex flex-col items-center gap-2 mt-1">
+              {message.status !== 'completed' && message.status !== 'error' ? (
+                <div className="relative">
+                  <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse" />
+                  <div className="absolute inset-0 w-3 h-3 bg-blue-500/30 rounded-full animate-ping" />
                 </div>
-              </div>
+              ) : message.status === 'completed' ? (
+                <div className="w-3 h-3 bg-green-500 rounded-full" />
+              ) : (
+                <div className="w-3 h-3 bg-red-500 rounded-full" />
+              )}
+              {message.steps && message.steps.length > 1 && (
+                <div className="w-px h-8 bg-gradient-to-b from-blue-500/50 to-transparent" />
+              )}
+            </div>
+            
+            {/* Modern steps container */}
+            <div className="flex-1 space-y-3">
+              {message.steps?.map((step, index) => (
+                <motion.div
+                  key={`${message.id}-${index}`}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="group"
+                >
+                  <div className="bg-gradient-to-r from-neutral-900/60 to-neutral-800/40 backdrop-blur-sm rounded-xl p-4 border border-neutral-700/30 hover:border-neutral-600/50 transition-all duration-300">
+                    <div className="flex items-center gap-3">
+                      {/* Step number */}
+                      <div className="w-6 h-6 bg-blue-500/20 border border-blue-500/30 rounded-full flex items-center justify-center">
+                        <span className="text-xs font-medium text-blue-300">
+                          {index + 1}
+                        </span>
+                      </div>
+                      
+                      {/* Step text with shimmer effect */}
+                      <div className="flex-1">
+                        {message.status !== 'completed' && message.status !== 'error' ? (
+                          <TextShimmer 
+                            className="text-sm font-medium text-white/90" 
+                            duration={2.5}
+                            spread={1}
+                          >
+                            {step}
+                          </TextShimmer>
+                        ) : (
+                          <span className="text-sm font-medium text-white/90">
+                            {step}
+                          </span>
+                        )}
+                      </div>
+                      
+                      {/* Status icon */}
+                      <div className="ml-auto">
+                        {message.status === 'completed' ? (
+                          <div className="w-5 h-5 bg-green-500/20 border border-green-500/30 rounded-full flex items-center justify-center">
+                            <svg className="w-3 h-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                          </div>
+                        ) : message.status === 'error' ? (
+                          <div className="w-5 h-5 bg-red-500/20 border border-red-500/30 rounded-full flex items-center justify-center">
+                            <svg className="w-3 h-3 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </div>
+                        ) : (
+                          <div className="w-5 h-5 bg-blue-500/20 border border-blue-500/30 rounded-full flex items-center justify-center">
+                            <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
             </div>
           </div>
 
           {/* Audio player for completed results */}
           {message.resultAudioUrl && message.status === 'completed' && (
-            <div className="mt-3 ml-5">
-              <AudioPlayer
-                src={message.resultAudioUrl}
-                title="✅ Remix Complete"
-                downloadUrl={message.downloadUrl}
-              />
-            </div>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mt-6 ml-7"
+            >
+              <div className="bg-gradient-to-r from-green-900/20 to-emerald-900/20 backdrop-blur-sm rounded-xl p-4 border border-green-500/20">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 bg-green-500/20 border border-green-500/30 rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                    </svg>
+                  </div>
+                  <span className="text-sm font-medium text-green-300">Remix Complete</span>
+                </div>
+                <AudioPlayer
+                  src={message.resultAudioUrl}
+                  title="Your Remix"
+                  downloadUrl={message.downloadUrl}
+                />
+              </div>
+            </motion.div>
           )}
 
           {/* Error display */}
           {message.error && message.status === 'error' && (
-            <div className="mt-2 ml-5 text-red-400 text-sm bg-red-900/20 border border-red-500/20 rounded-lg px-3 py-2">
-              ❌ {message.error}
-            </div>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-4 ml-7"
+            >
+              <div className="bg-gradient-to-r from-red-900/20 to-pink-900/20 backdrop-blur-sm rounded-xl p-4 border border-red-500/20">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-red-500/20 border border-red-500/30 rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <span className="text-sm font-medium text-red-300">Processing Error</span>
+                </div>
+                <p className="text-sm text-red-400 mt-2 ml-11">{message.error}</p>
+              </div>
+            </motion.div>
           )}
         </div>
       );
