@@ -97,8 +97,10 @@ const OPENAI_ICON = (
 
 export function AI_Prompt({
     onSubmit,
+    onChange,
 }: {
     onSubmit?: (message: string) => void;
+    onChange?: (value: string) => void;
 }) {
     const [value, setValue] = useState("");
     const { textareaRef, adjustHeight } = useAutoResizeTextarea({
@@ -186,12 +188,13 @@ export function AI_Prompt({
         if (!value.trim()) return;
         onSubmit?.(value);
         setValue("");
+        onChange?.(""); // Clear any warnings
         adjustHeight(true);
     };
 
     return (
-        <div className="w-full py-3">
-            <div className="bg-neutral-800/90 backdrop-blur-sm rounded-2xl p-1.5 border border-neutral-600/80">
+        <div className="w-full">
+            <div className="bg-neutral-900/90 backdrop-blur-sm rounded-2xl p-1.5 border border-neutral-600/80">
                 <div className="relative">
                     <div className="relative flex flex-col">
                         <div
@@ -203,26 +206,27 @@ export function AI_Prompt({
                                 value={value}
                                 placeholder={"What can I do for you?"}
                                 className={cn(
-                                    "w-full rounded-xl rounded-b-none px-4 py-2.5 bg-neutral-900/70 border-none text-white placeholder:text-neutral-400 resize-none focus-visible:ring-0 focus-visible:ring-offset-0",
+                                    "w-full rounded-xl rounded-b-none px-4 py-2.5 bg-neutral-950/70 border-none text-white placeholder:text-neutral-400 resize-none focus-visible:ring-0 focus-visible:ring-offset-0",
                                     "min-h-[60px]"
                                 )}
                                 ref={textareaRef}
                                 onKeyDown={handleKeyDown}
                                 onChange={(e) => {
                                     setValue(e.target.value);
+                                    onChange?.(e.target.value);
                                     adjustHeight();
                                 }}
                             />
                         </div>
 
-                        <div className="h-12 bg-neutral-900/70 rounded-b-xl flex items-center">
+                        <div className="h-12 bg-neutral-950/70 rounded-b-xl flex items-center">
                             <div className="absolute left-3 right-3 bottom-2.5 flex items-center justify-between w-[calc(100%-24px)]">
                                 <div className="flex items-center gap-1.5">
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
                                             <Button
                                                 variant="ghost"
-                                                className="flex items-center gap-1 h-8 pl-1 pr-2 text-xs rounded-md text-neutral-300 hover:bg-white/20 dark:hover:bg-white/20 focus-visible:ring-1 focus-visible:ring-offset-0 focus-visible:ring-blue-500"
+                                                className="flex items-center gap-1 h-8 pl-1 pr-2 text-xs rounded-md text-neutral-300 hover:bg-white/20 dark:hover:bg-white/20 hover:text-white focus-visible:ring-1 focus-visible:ring-offset-0 focus-visible:ring-blue-500"
                                             >
                                                 <AnimatePresence mode="wait">
                                                     <motion.div
@@ -258,8 +262,7 @@ export function AI_Prompt({
                                         <DropdownMenuContent
                                             className={cn(
                                                 "min-w-[10rem]",
-                                                "border-white/10 dark:border-white/10",
-                                                "bg-gradient-to-b from-white via-white to-neutral-100 dark:from-neutral-950 dark:via-neutral-900 dark:to-neutral-800"
+                                                "border-white/10 bg-neutral-950 hover:bg-neutral-950/80"
                                             )}
                                         >
                                             {AI_MODELS.map((model) => (
@@ -268,9 +271,9 @@ export function AI_Prompt({
                                                     onSelect={() =>
                                                         setSelectedModel(model)
                                                     }
-                                                    className="flex items-center justify-between gap-2"
+                                                    className="flex items-center justify-between gap-2 bg-black"
                                                 >
-                                                    <div className="flex items-center gap-2">
+                                                    <div className="flex items-center gap-2 text-neutral-300 hover:text-white">
                                                         {MODEL_ICONS[model] || (
                                                             <Bot className="w-4 h-4 opacity-50" />
                                                         )}
@@ -278,17 +281,17 @@ export function AI_Prompt({
                                                     </div>
                                                     {selectedModel ===
                                                         model && (
-                                                        <Check className="w-4 h-4 text-blue-500" />
-                                                    )}
+                                                        <Check className="w-4 h-4 text-white" />
+                                                    )} 
                                                 </DropdownMenuItem>
                                             ))}
                                         </DropdownMenuContent>
                                     </DropdownMenu>
-                                    <div className="h-4 w-px bg-white/10 dark:bg-white/10 mx-0.5" />
+                                    <div className="h-4 w-px bg-neutral-950/70 mx-0.5" />
                                     <label
                                         className={cn(
                                             "rounded-lg p-2 bg-neutral-600/50 cursor-pointer",
-                                            "hover:bg-neutral-600/70 focus-visible:ring-1 focus-visible:ring-offset-0 focus-visible:ring-blue-500",
+                                            "hover:bg-neutral-600/70 hover:text-white focus-visible:ring-1 focus-visible:ring-offset-0 focus-visible:ring-blue-500",
                                             "text-neutral-300 hover:text-white"
                                         )}
                                         aria-label="Attach file"

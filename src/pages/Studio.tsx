@@ -1,20 +1,31 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Send, Music, Mic, Upload, Settings, User, Plus, Menu, X, Sparkles, AudioWaveform as Waveform, Headphones, Play } from 'lucide-react';
+import { Send, Music, Mic, Upload, Settings, User, Plus, Menu, X, Sparkles, Headphones, Play, Copy, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
 import { FileUpload } from '@/components/ui/file-upload';
+import { AudioPlayer } from '@/components/ui/audio-player';
 import RemixCover from "@/components/ui/RemixCover";
 import { AI_Prompt } from "@/components/ui/animated-ai-input";
+import { TextShimmer } from "@/components/ui/text-shimmer";
+import { motion, AnimatePresence } from "motion/react";
+import { apiClient, uploadWithProgress, type JobStatus } from '@/lib/api-client';
+import { wsClient } from '@/lib/websocket-client';
 
 interface Message {
   id: string;
-  type: 'user' | 'ai';
+  type: 'user' | 'ai' | 'status';
   content: string;
   timestamp: Date;
   audioUrl?: string;
+  jobId?: string;
+  status?: 'uploading' | 'processing' | 'completed' | 'error' | 'initializing' | 'locating_file' | 'analyzing' | 'extracting_metadata' | 'preparing_ai' | 'ai_processing' | 'parsing_ai' | 'validating' | 'effects_applying' | 'rendering' | 'finalizing';
+  steps?: string[];
+  resultAudioUrl?: string;
+  downloadUrl?: string;
+  error?: string;
 }
 
 const Studio = () => {
@@ -24,6 +35,10 @@ const Studio = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [chatStarted, setChatStarted] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploadedFileId, setUploadedFileId] = useState<string | null>(null);
+  const [isBackendConnected, setIsBackendConnected] = useState(false);
+  const [activeJobs, setActiveJobs] = useState<Map<string, JobStatus>>(new Map());
+  const [inputWarning, setInputWarning] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -39,29 +54,160 @@ const Studio = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleFileUpload = (files: File[]) => {
-    if (files.length > 0) {
-      setUploadedFile(files[0]);
+  // Initialize backend connection
+  useEffect(() => {
+    const initializeBackend = async () => {
+      try {
+        // Check backend health
+        const isHealthy = await apiClient.healthCheck();
+        setIsBackendConnected(isHealthy);
+        
+        if (isHealthy) {
+          // Connect to WebSocket
+          await wsClient.connect();
+          
+          // Set up WebSocket event listeners
+          wsClient.on('job_update', (jobStatus: JobStatus) => {
+            console.log('📡 Received job update:', jobStatus);
+            setActiveJobs(prev => new Map(prev.set(jobStatus.job_id || jobStatus.file_id, jobStatus)));
+            
+            // Update message status - FIX: Match on job_id instead of file_id
+            setMessages(prev => prev.map(msg => {
+              if (msg.jobId === jobStatus.job_id) {
+                const cleanMessage = jobStatus.message.replace(/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/g, '').trim();
+                
+                // Avoid adding duplicate steps
+                const newSteps = msg.steps?.includes(cleanMessage) ? msg.steps : [...(msg.steps || []), cleanMessage];
+
+                console.log('🔄 Updating message for job:', jobStatus.job_id, 'Status:', jobStatus.status);
+                return {
+                  ...msg,
+                  status: jobStatus.status as any,
+                  steps: newSteps,
+                  timestamp: new Date(),
+                  resultAudioUrl: jobStatus.result_file ? apiClient.getAudioUrl(jobStatus.result_file) : undefined,
+                  downloadUrl: jobStatus.result_file ? apiClient.getDownloadUrl(jobStatus.job_id) : undefined,
+                  error: jobStatus.error
+                };
+              }
+              return msg;
+            }));
+          });
+
+          wsClient.on('connected', () => {
+            console.log('✅ WebSocket connected and ready');
+          });
+
+          wsClient.on('error', (error) => {
+            console.error('❌ WebSocket error:', error);
+          });
+
+          console.log('✅ Backend connected successfully');
+        } else {
+          console.warn('⚠️ Backend health check failed');
+        }
+      } catch (error) {
+        console.error('❌ Backend initialization failed:', error);
+        setIsBackendConnected(false);
+      }
+    };
+
+    initializeBackend();
+
+    return () => {
+      wsClient.disconnect();
+    };
+  }, []);
+
+  const handleFileUpload = async (files: File[]) => {
+    if (files.length === 0) return;
+    
+    const file = files[0];
+    setUploadedFile(file);
+    
+    if (!isBackendConnected) {
+      console.warn('⚠️ Backend not connected, file upload skipped');
+      return;
+    }
+
+    try {
+      // Create upload message
+      const uploadMessage: Message = {
+        id: Date.now().toString(),
+        type: 'status',
+        content: `📤 Uploading ${file.name}...`,
+        timestamp: new Date(),
+        status: 'uploading'
+      };
+      setMessages(prev => [...prev, uploadMessage]);
+
+      // Upload file
+      const uploadResult = await uploadWithProgress(file, () => {
+        // Just update text, no progress tracking
+        setMessages(prev => prev.map(msg => 
+          msg.id === uploadMessage.id 
+            ? { ...msg, content: `📤 Processing ${file.name}...` }
+            : msg
+        ));
+      });
+
+      // Update upload message to completed
+      setMessages(prev => prev.map(msg => 
+        msg.id === uploadMessage.id 
+          ? { 
+              ...msg, 
+              content: `✅ ${file.name} uploaded successfully`, 
+              status: 'completed'
+            }
+          : msg
+      ));
+
+      setUploadedFileId(uploadResult.file_id);
+      setInputWarning(null); // Clear any warning when file is uploaded
+      console.log('✅ File uploaded:', uploadResult);
+
+    } catch (error) {
+      console.error('❌ Upload failed:', error);
+      
+      // Add error message
+      const errorMessage: Message = {
+        id: Date.now().toString(),
+        type: 'status',
+        content: `❌ Upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        timestamp: new Date(),
+        status: 'error'
+      };
+      setMessages(prev => [...prev, errorMessage]);
     }
   };
 
   const handleSendMessage = async (message?: string) => {
     const messageText = message || inputValue;
-    if (!messageText.trim() && !uploadedFile) return;
+    if (!messageText.trim()) return;
+
+    if (!isBackendConnected) {
+      console.warn('⚠️ Backend not connected');
+      return;
+    }
+
+    // Check if we have an uploaded file
+    if (!uploadedFileId) {
+      setInputWarning("Please upload an audio file first before I can help you remix it!");
+      return;
+    }
+
+    // Clear any existing warning
+    setInputWarning(null);
 
     const userMessage: Message = {
       id: Date.now().toString(),
       type: 'user',
-      content: uploadedFile 
-        ? `Uploaded: ${uploadedFile.name} - ${messageText || 'Ready to remix!'}`
-        : messageText,
+      content: messageText,
       timestamp: new Date()
     };
 
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
-    setUploadedFile(null);
-    setIsLoading(true);
     setChatStarted(true);
 
     // Reset file input
@@ -69,17 +215,42 @@ const Studio = () => {
       fileInputRef.current.value = '';
     }
 
-    // Simulate AI response
-    setTimeout(() => {
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        type: 'ai',
-        content: "Great! I've received your audio file. I can help you remix it in various styles. What kind of remix are you looking for? Electronic, Hip Hop, Pop, or something else?",
-        timestamp: new Date()
+    try {
+      // Start processing
+      const processResult = await apiClient.processAudio(uploadedFileId, messageText);
+      
+      const cleanMessage = processResult.message.replace(/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/g, '').trim();
+      // Create processing status message
+      const processingMessage: Message = {
+        id: processResult.job_id,
+        type: 'status',
+        content: 'Remix in progress...',
+        steps: [cleanMessage],
+        timestamp: new Date(),
+        jobId: processResult.job_id,
+        status: 'initializing'
       };
-      setMessages(prev => [...prev, aiMessage]);
-      setIsLoading(false);
-    }, 1500);
+      
+      setMessages(prev => [...prev, processingMessage]);
+      
+      // Join WebSocket room for updates
+      wsClient.joinJob(processResult.job_id);
+      
+      console.log('🔄 Processing started:', processResult);
+      console.log('📋 Joined job room:', processResult.job_id);
+
+    } catch (error) {
+      console.error('❌ Processing failed:', error);
+      
+      const errorMessage: Message = {
+        id: Date.now().toString(),
+        type: 'ai',
+        content: `❌ Processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        timestamp: new Date(),
+        status: 'error'
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -88,6 +259,108 @@ const Studio = () => {
       handleSendMessage();
     }
   };
+
+  const renderMessage = (message: Message) => {
+    if (message.type === 'status') {
+      console.log('🎨 Rendering status message:', message.content);
+      return (
+        <div className="w-full py-2">
+          <div className="flex items-start gap-3">
+            {/* Simple processing indicator for non-completed status */}
+            {message.status !== 'completed' && message.status !== 'error' && (
+              <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse mt-2 flex-shrink-0" />
+            )}
+            
+            {/* Text content */}
+            <div className="flex-1">
+              <div className="bg-neutral-900/50 backdrop-blur-sm rounded-lg p-4 border border-neutral-700/60">
+                <div className="flex flex-col gap-3">
+                  {message.steps?.map((step, index) => (
+                    <TextShimmer 
+                      key={`${message.id}-${index}`}
+                      className="text-sm" 
+                      duration={3}
+                      spread={2}
+                    >
+                      {step}
+                    </TextShimmer>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Audio player for completed results */}
+          {message.resultAudioUrl && message.status === 'completed' && (
+            <div className="mt-3 ml-5">
+              <AudioPlayer
+                src={message.resultAudioUrl}
+                title="✅ Remix Complete"
+                downloadUrl={message.downloadUrl}
+              />
+            </div>
+          )}
+
+          {/* Error display */}
+          {message.error && message.status === 'error' && (
+            <div className="mt-2 ml-5 text-red-400 text-sm bg-red-900/20 border border-red-500/20 rounded-lg px-3 py-2">
+              ❌ {message.error}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // Regular user/AI messages
+    return message.type === 'user' ? (
+      <div className="flex justify-end">
+        <div className="relative max-w-lg">
+          <div className="bg-neutral-900/90 backdrop-blur-sm rounded-2xl p-4 border border-neutral-600/80">
+            <p className="text-white text-base leading-relaxed">{message.content}</p>
+          </div>
+        </div>
+      </div>
+    ) : (
+      <div className="w-full">
+        <div className="relative">
+          <div className="rounded-2xl p-6">
+            <p className="text-white text-base leading-relaxed">{message.content}</p>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  };
+
+  // Clear warning when user starts typing
+  const handleInputChange = (value: string) => {
+    if (inputWarning && value.trim()) {
+      setInputWarning(null);
+    }
+  };
+
+  // Create input component with warning
+  const InputWithWarning = ({ className }: { className?: string }) => (
+    <div className={className}>
+      <AI_Prompt 
+        onSubmit={handleSendMessage} 
+        onChange={handleInputChange}
+      />
+      {inputWarning && (
+        <div className="mt-3 flex items-center gap-2 text-red-400 text-sm bg-red-900/20 border border-red-500/20 rounded-lg px-3 py-2">
+          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+          <span>{inputWarning}</span>
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div className="h-screen bg-black p-4 overflow-hidden">
@@ -165,110 +438,131 @@ const Studio = () => {
 
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col gap-4 min-h-0">
-          {!chatStarted ? (
-            /* Initial Compact Layout - Centered */
-            <div className="flex-1 flex flex-col items-center justify-center bg-black/40 backdrop-blur-xl p-8 space-y-6">
-              {/* Remix Presets - Larger covers with intense gradients */}
-              <div className="flex items-center space-x-4">
-                {remixCovers.map((remix) => (
-                  <RemixCover key={remix.id} remix={remix} />
-                ))}
-              </div>
+          <AnimatePresence mode="wait">
+            {!chatStarted ? (
+              /* Initial Compact Layout - Centered */
+              <motion.div 
+                key="initial"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.05 }}
+                transition={{ duration: 0.15, ease: "easeInOut" }}
+                className="flex-1 flex flex-col items-center justify-center bg-black/40 backdrop-blur-xl p-8 space-y-6"
+              >
+                {/* Remix Presets - Larger covers with intense gradients */}
+                <div className="flex items-center space-x-4">
+                  {remixCovers.map((remix) => (
+                    <RemixCover key={remix.id} remix={remix} />
+                  ))}
+                </div>
 
-              {/* Upload Area - Using FileUpload component */}
-              <div className="w-full max-w-2xl pt-10">
-                <FileUpload onChange={handleFileUpload} />
-                {uploadedFile && (
-                  <div className="mt-4 text-center">
-                    <p className="text-green-400 text-sm">
-                      Ready to remix: {uploadedFile.name}
-                    </p>
-                  </div>
-                )}
-              </div>
+                {/* Backend Status */}
+                <div className="flex items-center gap-2 mb-4">
+                  <div className={`w-2 h-2 rounded-full ${isBackendConnected ? 'bg-green-400' : 'bg-red-400'}`} />
+                  <span className="text-xs text-neutral-400">
+                    {isBackendConnected ? 'Backend Connected' : 'Backend Disconnected'}
+                  </span>
+                </div>
 
-              {/* Chat Input Bar */}
-              <div className="w-full max-w-2xl relative flex justify-center">
-                <AI_Prompt onSubmit={handleSendMessage} />
-              </div>
+                {/* Upload Area - Using FileUpload component */}
+                <div className="w-full max-w-2xl pt-10">
+                  <FileUpload onChange={handleFileUpload} />
+                  {uploadedFile && (
+                    <div className="mt-4 text-center">
+                      <p className="text-green-400 text-sm">
+                        Ready to remix: {uploadedFile.name}
+                        {uploadedFileId && <span className="ml-2">✅</span>}
+                      </p>
+                    </div>
+                  )}
+                </div>
 
-            </div>
-          ) : (
-            /* Chat View - No borders */
-            <>
-              {/* Messages Display */}
-              <div className="flex-1 bg-black/40 backdrop-blur-xl p-6 min-h-0">
-                <ScrollArea className="h-full pr-4 -mr-4">
+                {/* Chat Input Bar */}
+                <InputWithWarning className="w-full max-w-2xl relative flex flex-col items-center" />
+
+              </motion.div>
+            ) : (
+              /* Chat View - No borders */
+              <motion.div
+                key="chat"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.15, ease: "easeInOut" }}
+                className="flex-1 flex flex-col gap-4 min-h-0"
+              >
+                {/* Messages Display */}
+                <div className="flex-1 bg-black/40 backdrop-blur-xl p-6 min-h-0 flex justify-center">
+                <div className="w-full max-w-4xl">
+                  <ScrollArea 
+                    className="h-full pr-6 -mr-6 [&>div>div]:!pr-6 [&::-webkit-scrollbar]:w-[1px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-white/20" 
+                    style={{
+                      scrollbarWidth: 'thin',
+                      scrollbarColor: 'rgba(255, 255, 255, 0.1) transparent'
+                    }}
+                  >
                   <div className="h-full flex flex-col">
                     {/* Chat Header */}
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-white/10 flex items-center justify-center">
-                          <Sparkles className="w-4 h-4 text-white" />
-                        </div>
-                        <div>
-                          <h2 className="text-white font-semibold text-sm">Remix Studio</h2>
-                          <p className="text-white/60 text-xs">AI-powered music remixing</p>
-                        </div>
-                      </div>
+                    <div className="flex items-center justify-end mb-6">
                       <Button
                         variant="ghost"
-                        onClick={() => setChatStarted(false)}
-                        className="text-white/70 hover:text-white hover:bg-white/10 text-xs h-8"
+                        onClick={() => {
+                          setChatStarted(false);
+                          setMessages([]);
+                          setUploadedFile(null);
+                          setUploadedFileId(null);
+                          setActiveJobs(new Map());
+                        }}
+                        className="flex items-center gap-2 bg-neutral-900/90 backdrop-blur-sm border border-neutral-600/80 text-white hover:text-white hover:bg-neutral-800/90 px-4 py-2 h-10 rounded-xl transition-all duration-200"
                       >
+                        <Plus className="w-4 h-4" />
                         New Session
                       </Button>
                     </div>
 
                     {/* Messages Area */}
-                    <div className="space-y-4">
-                      {messages.map((message) => (
-                        <div
-                          key={message.id}
-                          className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                        >
-                          <div
-                            className={`max-w-[80%] p-3 backdrop-blur-sm text-sm ${
-                              message.type === 'user'
-                                ? 'bg-white text-black'
-                                : 'bg-white/10 text-white'
-                            }`}
-                          >
-                            <p>{message.content}</p>
-                            <p className="text-xs opacity-60 mt-1">
-                              {message.timestamp.toLocaleTimeString()}
-                            </p>
-                          </div>
+                    <div className="space-y-4 font-sans">
+                      {messages.map((message, index) => (
+                        <div key={message.id} className="group">
+                          {message.type === 'status' ? (
+                            // Status messages in thinking style
+                            <div className="animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+                              {renderMessage(message)}
+                            </div>
+                          ) : (
+                            // Regular user/AI messages with more spacing
+                            <div className="pt-2">
+                              {renderMessage(message)}
+                              <div className="flex items-center gap-3 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                <button 
+                                  onClick={() => copyToClipboard(message.content)}
+                                  className="text-neutral-400 hover:text-white text-sm flex items-center gap-1 hover:bg-neutral-800/50 rounded-md px-2 py-1 transition-colors"
+                                >
+                                  <Copy className="w-4 h-4" />
+                                </button>
+                                <span className="text-neutral-400 text-sm">
+                                  {message.timestamp.toLocaleTimeString()}
+                                </span>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       ))}
 
-                      {isLoading && (
-                        <div className="flex justify-start">
-                          <div className="bg-white/10 p-3 backdrop-blur-sm">
-                            <div className="flex items-center space-x-2">
-                              <div className="flex space-x-1">
-                                <div className="w-1.5 h-1.5 bg-gray-400"></div>
-                                <div className="w-1.5 h-1.5 bg-gray-400"></div>
-                                <div className="w-1.5 h-1.5 bg-gray-400"></div>
-                              </div>
-                              <span className="text-white/60 text-xs">AI is thinking...</span>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
                       <div ref={messagesEndRef} />
                     </div>
-                  </div>
-                </ScrollArea>
+                                      </div>
+                  </ScrollArea>
+                </div>
               </div>
 
-              {/* Chat Input - No borders */}
-              <div className="bg-black/40 backdrop-blur-xl p-4 flex justify-center">
-                <AI_Prompt onSubmit={handleSendMessage} />
-              </div>
-            </>
-          )}
+                {/* Chat Input - No borders */}
+                <div className="bg-black/40 backdrop-blur-xl p-4 flex justify-center">
+                  <InputWithWarning className="w-full max-w-4xl" />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>
