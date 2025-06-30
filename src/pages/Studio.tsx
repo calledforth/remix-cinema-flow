@@ -270,76 +270,76 @@ const Studio = () => {
       return (
         <div className="w-full py-4">
           <div className="flex items-start gap-4">
-            {/* Modern status indicator */}
+            {/* Modern status indicator with subtle animation */}
             <div className="flex flex-col items-center gap-2 mt-1">
               {message.status !== 'completed' && message.status !== 'error' ? (
                 <div className="relative">
-                  <div className="w-3 h-3 bg-white/60 rounded-full animate-pulse" />
-                  <div className="absolute inset-0 w-3 h-3 bg-white/20 rounded-full animate-ping" />
+                  <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                  <div className="absolute inset-0 w-2 h-2 bg-white/30 rounded-full animate-ping" />
                 </div>
               ) : message.status === 'completed' ? (
-                <div className="w-3 h-3 bg-white rounded-full" />
+                <div className="w-2 h-2 bg-white rounded-full" />
               ) : (
-                <div className="w-3 h-3 bg-red-400 rounded-full" />
+                <div className="w-2 h-2 bg-red-400 rounded-full" />
               )}
               {message.steps && message.steps.length > 1 && (
-                <div className="w-px h-8 bg-gradient-to-b from-white/30 to-transparent" />
+                <div className="w-px h-8 bg-gradient-to-b from-white/20 to-transparent" />
               )}
             </div>
             
-            {/* Modern steps container */}
-            <div className="flex-1 space-y-3">
+            {/* Clean steps container */}
+            <div className="flex-1 space-y-2">
               {message.steps?.map((step, index) => (
                 <motion.div
                   key={`${message.id}-${index}`}
-                  initial={{ opacity: 0, x: -20 }}
+                  initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
+                  transition={{ delay: index * 0.08, duration: 0.3 }}
                   className="group"
                 >
-                  <div className="bg-neutral-800/40 backdrop-blur-sm rounded-xl p-4 border border-neutral-700/20 hover:border-neutral-600/30 transition-all duration-300">
+                  <div className="bg-neutral-900/40 backdrop-blur-sm rounded-lg p-3 border border-neutral-800/30 hover:border-neutral-700/50 transition-all duration-200">
                     <div className="flex items-center gap-3">
-                      {/* Step number */}
-                      <div className="w-6 h-6 bg-white/10 border border-white/20 rounded-full flex items-center justify-center">
-                        <span className="text-xs font-medium text-white/80">
+                      {/* Minimal step indicator */}
+                      <div className="w-5 h-5 bg-neutral-800/60 border border-neutral-700/50 rounded-md flex items-center justify-center">
+                        <span className="text-xs font-medium text-neutral-300">
                           {index + 1}
                         </span>
                       </div>
                       
-                      {/* Step text with shimmer effect */}
+                      {/* Step text with shimmer */}
                       <div className="flex-1">
                         {message.status !== 'completed' && message.status !== 'error' ? (
                           <TextShimmer 
                             className="text-sm font-medium" 
-                            duration={2.5}
+                            duration={2}
                             spread={1}
                           >
                             {step}
                           </TextShimmer>
                         ) : (
-                          <span className="text-sm font-medium text-white/90">
+                          <span className="text-sm font-medium text-neutral-200">
                             {step}
                           </span>
                         )}
                       </div>
                       
-                      {/* Status icon */}
+                      {/* Minimal status icon */}
                       <div className="ml-auto">
                         {message.status === 'completed' ? (
-                          <div className="w-5 h-5 bg-white/10 border border-white/20 rounded-full flex items-center justify-center">
-                            <svg className="w-3 h-3 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          <div className="w-4 h-4 bg-neutral-800/60 border border-neutral-700/50 rounded-md flex items-center justify-center">
+                            <svg className="w-2.5 h-2.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                             </svg>
                           </div>
                         ) : message.status === 'error' ? (
-                          <div className="w-5 h-5 bg-red-500/20 border border-red-500/30 rounded-full flex items-center justify-center">
-                            <svg className="w-3 h-3 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          <div className="w-4 h-4 bg-red-900/40 border border-red-700/50 rounded-md flex items-center justify-center">
+                            <svg className="w-2.5 h-2.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                             </svg>
                           </div>
                         ) : (
-                          <div className="w-5 h-5 bg-white/10 border border-white/20 rounded-full flex items-center justify-center">
-                            <div className="w-2 h-2 bg-white/60 rounded-full animate-pulse" />
+                          <div className="w-4 h-4 bg-neutral-800/60 border border-neutral-700/50 rounded-md flex items-center justify-center">
+                            <div className="w-1.5 h-1.5 bg-neutral-400 rounded-full animate-pulse" />
                           </div>
                         )}
                       </div>
@@ -356,16 +356,16 @@ const Studio = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="mt-6 ml-7"
+              className="mt-6 ml-6"
             >
-              <div className="bg-neutral-800/20 backdrop-blur-sm rounded-xl p-4 border border-neutral-700/20">
+              <div className="bg-neutral-900/20 backdrop-blur-sm rounded-lg p-4 border border-neutral-800/20">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 bg-white/10 border border-white/20 rounded-full flex items-center justify-center">
-                    <svg className="w-4 h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-6 h-6 bg-neutral-800/60 border border-neutral-700/50 rounded-md flex items-center justify-center">
+                    <svg className="w-3.5 h-3.5 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                     </svg>
                   </div>
-                  <span className="text-sm font-medium text-white/90">Remix Complete</span>
+                  <span className="text-sm font-medium text-neutral-200">Remix Complete</span>
                 </div>
                 <AudioPlayer
                   src={message.resultAudioUrl}
@@ -381,18 +381,18 @@ const Studio = () => {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-4 ml-7"
+              className="mt-4 ml-6"
             >
-              <div className="bg-red-900/20 backdrop-blur-sm rounded-xl p-4 border border-red-500/20">
+              <div className="bg-red-900/20 backdrop-blur-sm rounded-lg p-4 border border-red-800/30">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-red-500/20 border border-red-500/30 rounded-full flex items-center justify-center">
-                    <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-6 h-6 bg-red-900/40 border border-red-700/50 rounded-md flex items-center justify-center">
+                    <svg className="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
                   <span className="text-sm font-medium text-red-300">Processing Error</span>
                 </div>
-                <p className="text-sm text-red-400 mt-2 ml-11">{message.error}</p>
+                <p className="text-sm text-red-400 mt-2 ml-9">{message.error}</p>
               </div>
             </motion.div>
           )}
