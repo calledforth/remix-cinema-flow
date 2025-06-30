@@ -269,16 +269,16 @@ const Studio = () => {
             <div className="flex flex-col items-center gap-2 mt-1">
               {message.status !== 'completed' && message.status !== 'error' ? (
                 <div className="relative">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse" />
-                  <div className="absolute inset-0 w-3 h-3 bg-blue-500/30 rounded-full animate-ping" />
+                  <div className="w-3 h-3 bg-white/60 rounded-full animate-pulse" />
+                  <div className="absolute inset-0 w-3 h-3 bg-white/20 rounded-full animate-ping" />
                 </div>
               ) : message.status === 'completed' ? (
-                <div className="w-3 h-3 bg-green-500 rounded-full" />
+                <div className="w-3 h-3 bg-white rounded-full" />
               ) : (
-                <div className="w-3 h-3 bg-red-500 rounded-full" />
+                <div className="w-3 h-3 bg-red-400 rounded-full" />
               )}
               {message.steps && message.steps.length > 1 && (
-                <div className="w-px h-8 bg-gradient-to-b from-blue-500/50 to-transparent" />
+                <div className="w-px h-8 bg-gradient-to-b from-white/30 to-transparent" />
               )}
             </div>
             
@@ -292,11 +292,11 @@ const Studio = () => {
                   transition={{ delay: index * 0.1 }}
                   className="group"
                 >
-                  <div className="bg-gradient-to-r from-neutral-900/60 to-neutral-800/40 backdrop-blur-sm rounded-xl p-4 border border-neutral-700/30 hover:border-neutral-600/50 transition-all duration-300">
+                  <div className="bg-neutral-800/40 backdrop-blur-sm rounded-xl p-4 border border-neutral-700/20 hover:border-neutral-600/30 transition-all duration-300">
                     <div className="flex items-center gap-3">
                       {/* Step number */}
-                      <div className="w-6 h-6 bg-blue-500/20 border border-blue-500/30 rounded-full flex items-center justify-center">
-                        <span className="text-xs font-medium text-blue-300">
+                      <div className="w-6 h-6 bg-white/10 border border-white/20 rounded-full flex items-center justify-center">
+                        <span className="text-xs font-medium text-white/80">
                           {index + 1}
                         </span>
                       </div>
@@ -305,7 +305,7 @@ const Studio = () => {
                       <div className="flex-1">
                         {message.status !== 'completed' && message.status !== 'error' ? (
                           <TextShimmer 
-                            className="text-sm font-medium text-white/90" 
+                            className="text-sm font-medium" 
                             duration={2.5}
                             spread={1}
                           >
@@ -321,8 +321,8 @@ const Studio = () => {
                       {/* Status icon */}
                       <div className="ml-auto">
                         {message.status === 'completed' ? (
-                          <div className="w-5 h-5 bg-green-500/20 border border-green-500/30 rounded-full flex items-center justify-center">
-                            <svg className="w-3 h-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="w-5 h-5 bg-white/10 border border-white/20 rounded-full flex items-center justify-center">
+                            <svg className="w-3 h-3 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
                           </div>
@@ -333,8 +333,8 @@ const Studio = () => {
                             </svg>
                           </div>
                         ) : (
-                          <div className="w-5 h-5 bg-blue-500/20 border border-blue-500/30 rounded-full flex items-center justify-center">
-                            <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
+                          <div className="w-5 h-5 bg-white/10 border border-white/20 rounded-full flex items-center justify-center">
+                            <div className="w-2 h-2 bg-white/60 rounded-full animate-pulse" />
                           </div>
                         )}
                       </div>
@@ -353,14 +353,14 @@ const Studio = () => {
               transition={{ delay: 0.3 }}
               className="mt-6 ml-7"
             >
-              <div className="bg-gradient-to-r from-green-900/20 to-emerald-900/20 backdrop-blur-sm rounded-xl p-4 border border-green-500/20">
+              <div className="bg-neutral-800/20 backdrop-blur-sm rounded-xl p-4 border border-neutral-700/20">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 bg-green-500/20 border border-green-500/30 rounded-full flex items-center justify-center">
-                    <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-8 h-8 bg-white/10 border border-white/20 rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                     </svg>
                   </div>
-                  <span className="text-sm font-medium text-green-300">Remix Complete</span>
+                  <span className="text-sm font-medium text-white/90">Remix Complete</span>
                 </div>
                 <AudioPlayer
                   src={message.resultAudioUrl}
@@ -378,7 +378,7 @@ const Studio = () => {
               animate={{ opacity: 1, y: 0 }}
               className="mt-4 ml-7"
             >
-              <div className="bg-gradient-to-r from-red-900/20 to-pink-900/20 backdrop-blur-sm rounded-xl p-4 border border-red-500/20">
+              <div className="bg-red-900/20 backdrop-blur-sm rounded-xl p-4 border border-red-500/20">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-red-500/20 border border-red-500/30 rounded-full flex items-center justify-center">
                     <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

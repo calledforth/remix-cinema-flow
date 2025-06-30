@@ -28,10 +28,7 @@ export function TextShimmer({
   return (
     <MotionComponent
       className={cn(
-        'relative inline-block',
-        'bg-gradient-to-r from-transparent via-white/80 to-transparent',
-        'bg-[length:200%_100%] bg-clip-text text-transparent',
-        'dark:from-transparent dark:via-white/90 dark:to-transparent',
+        'relative inline-block text-white/70',
         className
       )}
       initial={{ backgroundPosition: '-200% center' }}
@@ -42,7 +39,8 @@ export function TextShimmer({
         ease: 'linear',
       }}
       style={{
-        backgroundImage: `linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 20%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.1) 80%, transparent 100%)`,
+        background: `linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 20%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0.3) 80%, transparent 100%)`,
+        backgroundSize: '200% 100%',
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
         backgroundClip: 'text',
