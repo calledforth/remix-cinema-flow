@@ -1,4 +1,3 @@
-
 'use client';
 import React, { useMemo } from 'react';
 import { motion } from 'motion/react';
@@ -28,7 +27,7 @@ export function TextShimmer({
   return (
     <MotionComponent
       className={cn(
-        'relative inline-block text-white/70',
+        'relative inline-block text-white/80',
         className
       )}
       initial={{ backgroundPosition: '-200% center' }}
@@ -39,7 +38,7 @@ export function TextShimmer({
         ease: 'linear',
       }}
       style={{
-        background: `linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 20%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0.3) 80%, transparent 100%)`,
+        background: `linear-gradient(90deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0.2) 100%)`,
         backgroundSize: '200% 100%',
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',

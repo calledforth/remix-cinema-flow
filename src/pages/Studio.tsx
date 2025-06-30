@@ -32,7 +32,7 @@ const Studio = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [chatStarted, setChatStarted] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadedFileId, setUploadedFileId] = useState<string | null>(null);
@@ -607,32 +607,30 @@ const Studio = () => {
                 className="flex-1 flex flex-col gap-4 min-h-0"
               >
                 {/* Messages Display */}
-                <div className="flex-1 bg-black/40 backdrop-blur-xl p-6 min-h-0 flex justify-center">
+                <div className="flex-1 bg-black/40 backdrop-blur-xl p-6 min-h-0 flex justify-center relative">
+                  {/* Sticky New Session Button - Top Right */}
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setChatStarted(false);
+                      setMessages([]);
+                      setUploadedFile(null);
+                      setUploadedFileId(null);
+                      setActiveJobs(new Map());
+                    }}
+                    className="absolute top-4 right-4 z-50 w-10 h-10 bg-white/5 backdrop-blur-sm border border-white/10 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 flex items-center justify-center"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </Button>
+
                 <div className="w-full max-w-4xl">
                   <ScrollArea 
-                    className="h-full pr-6 -mr-6 [&>div>div]:!pr-6 [&::-webkit-scrollbar]:w-[1px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-white/20" 
-                    style={{
-                      scrollbarWidth: 'thin',
-                      scrollbarColor: 'rgba(255, 255, 255, 0.1) transparent'
-                    }}
+                    className="h-full"
                   >
                   <div className="h-full flex flex-col">
                     {/* Chat Header */}
                     <div className="flex items-center justify-end mb-6">
-                      <Button
-                        variant="ghost"
-                        onClick={() => {
-                          setChatStarted(false);
-                          setMessages([]);
-                          setUploadedFile(null);
-                          setUploadedFileId(null);
-                          setActiveJobs(new Map());
-                        }}
-                        className="flex items-center gap-2 bg-neutral-900/90 backdrop-blur-sm border border-neutral-600/80 text-white hover:text-white hover:bg-neutral-800/90 px-4 py-2 h-10 rounded-xl transition-all duration-200"
-                      >
-                        <Plus className="w-4 h-4" />
-                        New Session
-                      </Button>
+                      {/* New Session button removed from here */}
                     </div>
 
                     {/* Messages Area */}

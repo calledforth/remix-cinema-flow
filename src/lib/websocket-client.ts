@@ -16,7 +16,7 @@ class WebSocketClient {
   private maxReconnectAttempts = 5;
   private eventListeners: Map<string, Function[]> = new Map();
 
-  constructor(serverUrl: string = 'http://localhost:5000') {
+  constructor(serverUrl: string = 'https://remix-backend-rg80.onrender.com') {
     this.serverUrl = serverUrl;
   }
 

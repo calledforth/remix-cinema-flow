@@ -1,4 +1,5 @@
-const API_BASE_URL = 'http://localhost:5000';
+// const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = 'https://remix-backend-rg80.onrender.com';
 
 export interface UploadResponse {
   file_id: string;

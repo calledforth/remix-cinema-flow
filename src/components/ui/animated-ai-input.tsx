@@ -107,11 +107,14 @@ export function AI_Prompt({
         minHeight: 60,
         maxHeight: 300,
     });
-    const [selectedModel, setSelectedModel] = useState("GPT-4-1 Mini");
+    const [selectedModel, setSelectedModel] = useState("Gemini 2.5 Flash");
 
     const AI_MODELS = [
-        "o3-mini",
         "Gemini 2.5 Flash",
+        "Gemini 1.5 Flash",
+        "Gemini 1.5 Pro",
+        "Gemini 2.0 Flash",
+        "o3-mini",
         "Claude 3.5 Sonnet",
         "GPT-4-1 Mini",
         "GPT-4-1",
@@ -143,6 +146,90 @@ export function AI_Prompt({
                 <path
                     d="M12 24A14.304 14.304 0 000 12 14.304 14.304 0 0012 0a14.305 14.305 0 0012 12 14.305 14.305 0 00-12 12"
                     fill="url(#lobe-icons-gemini-fill)"
+                    fillRule="nonzero"
+                />
+            </svg>
+        ),
+        "Gemini 1.5 Flash": (
+            <svg
+                height="1em"
+                className="w-4 h-4"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <title>Gemini</title>
+                <defs>
+                    <linearGradient
+                        id="lobe-icons-gemini-fill-2"
+                        x1="0%"
+                        x2="68.73%"
+                        y1="100%"
+                        y2="30.395%"
+                    >
+                        <stop offset="0%" stopColor="#1C7DFF" />
+                        <stop offset="52.021%" stopColor="#1C69FF" />
+                        <stop offset="100%" stopColor="#F0DCD6" />
+                    </linearGradient>
+                </defs>
+                <path
+                    d="M12 24A14.304 14.304 0 000 12 14.304 14.304 0 0012 0a14.305 14.305 0 0012 12 14.305 14.305 0 00-12 12"
+                    fill="url(#lobe-icons-gemini-fill-2)"
+                    fillRule="nonzero"
+                />
+            </svg>
+        ),
+        "Gemini 1.5 Pro": (
+            <svg
+                height="1em"
+                className="w-4 h-4"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <title>Gemini</title>
+                <defs>
+                    <linearGradient
+                        id="lobe-icons-gemini-fill-3"
+                        x1="0%"
+                        x2="68.73%"
+                        y1="100%"
+                        y2="30.395%"
+                    >
+                        <stop offset="0%" stopColor="#1C7DFF" />
+                        <stop offset="52.021%" stopColor="#1C69FF" />
+                        <stop offset="100%" stopColor="#F0DCD6" />
+                    </linearGradient>
+                </defs>
+                <path
+                    d="M12 24A14.304 14.304 0 000 12 14.304 14.304 0 0012 0a14.305 14.305 0 0012 12 14.305 14.305 0 00-12 12"
+                    fill="url(#lobe-icons-gemini-fill-3)"
+                    fillRule="nonzero"
+                />
+            </svg>
+        ),
+        "Gemini 2.0 Flash": (
+            <svg
+                height="1em"
+                className="w-4 h-4"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <title>Gemini</title>
+                <defs>
+                    <linearGradient
+                        id="lobe-icons-gemini-fill-4"
+                        x1="0%"
+                        x2="68.73%"
+                        y1="100%"
+                        y2="30.395%"
+                    >
+                        <stop offset="0%" stopColor="#1C7DFF" />
+                        <stop offset="52.021%" stopColor="#1C69FF" />
+                        <stop offset="100%" stopColor="#F0DCD6" />
+                    </linearGradient>
+                </defs>
+                <path
+                    d="M12 24A14.304 14.304 0 000 12 14.304 14.304 0 0012 0a14.305 14.305 0 0012 12 14.305 14.305 0 00-12 12"
+                    fill="url(#lobe-icons-gemini-fill-4)"
                     fillRule="nonzero"
                 />
             </svg>

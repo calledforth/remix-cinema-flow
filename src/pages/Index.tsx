@@ -77,6 +77,20 @@ const Index = () => {
       normalizeScroll: true, // Better mobile support
     });
 
+    // Animate nav bar sliding in based on scroll position
+    gsap.fromTo(navRef.current, {
+      yPercent: -150
+    }, {
+      yPercent: 0,
+      duration: 0.5,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: heroRef.current,
+        start: 'bottom top+=100px',
+        toggleActions: 'play none none reverse'
+      }
+    });
+
     // Main hero transformation timeline
     const heroTimeline = gsap.timeline({
       scrollTrigger: {
@@ -87,13 +101,6 @@ const Index = () => {
         refreshPriority: -1, // Lower priority to prevent conflicts
       }
     });
-
-    // Fade out hero title and fade in nav
-    heroTimeline
-      .to(navRef.current, {
-        opacity: 1,
-        duration: 0.5,
-      }, "-=0.5");
 
     // Show tagline section
     gsap.fromTo(taglineRef.current, 
@@ -124,9 +131,9 @@ const Index = () => {
         scrollTrigger: {
           trigger: featuresContainerRef.current,
           start: "top top",
-          end: "bottom bottom",
+          end: "+=250%",
           pin: true,
-          scrub: 1,
+          scrub: 1.5,
           anticipatePin: 1, // Smoother pinning
           refreshPriority: 1, // Higher priority for main animation
           invalidateOnRefresh: true, // Recalculate on resize
@@ -261,22 +268,6 @@ const Index = () => {
       }
     );
 
-    gsap.fromTo(footerRef.current, 
-      { opacity: 0, y: 50 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        scrollTrigger: {
-          trigger: footerRef.current,
-          start: "top 90%",
-          end: "bottom 20%",
-          scrub: 1,
-          refreshPriority: -1,
-        }
-      }
-    );
-
     // Cleanup function
     return () => {
       if (smoother) {
@@ -301,40 +292,54 @@ const Index = () => {
       {/* Navigation - FIXED ABOVE EVERYTHING */}
       <nav 
         ref={navRef}
-        className="fixed top-0 left-0 right-0 z-[9999] p-6 opacity-0"
+        className="fixed top-0 left-0 right-0 z-[9999] p-4 flex justify-center"
       >
-        <div className="flex justify-between items-center max-w-7xl mx-auto">
-          {/* Left side - Only title */}
-          <div className="text-white font-bold text-xl">remix.</div>
+        <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl px-6 py-2 max-w-5xl w-full overflow-hidden">
+          {/* Subtle gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
           
-          {/* Right side - All other elements */}
-          <div className="flex items-center space-x-8">
-            <div className="hidden md:flex space-x-8 text-white/80">
-              <a href="#about" className="hover:text-white transition-colors">about</a>
-              <a href="#features" className="hover:text-white transition-colors">features</a>
-              <a href="#contact" className="hover:text-white transition-colors">contact</a>
-            </div>
+          {/* Decorative border */}
+          <div className="absolute inset-1 border border-white/10 pointer-events-none z-10 rounded-lg" />
+          
+          {/* Animated border elements */}
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+          <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-transparent via-white/30 to-transparent"></div>
+          <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
+          <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-t from-transparent via-white/30 to-transparent"></div>
+          
+          <div className="flex justify-between items-center relative z-10">
+            {/* Left side - Only title */}
+            <div className="text-white font-bold text-3xl">remix.</div>
             
-            {/* Glass Blur Button - Same style as feature cards */}
-            <Link 
-              to="/studio"
-              className="relative bg-white/10 backdrop-blur-md border border-white/20 text-white px-6 py-3 font-medium hover:bg-white/20 transition-all duration-300 overflow-hidden group"
-            >
-              {/* Subtle gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+            {/* Right side - All other elements */}
+            <div className="flex items-center space-x-8">
+              <div className="hidden md:flex space-x-8 text-white/80">
+                <a href="#about" className="hover:text-white transition-colors">about</a>
+                <a href="#features" className="hover:text-white transition-colors">features</a>
+                <a href="#contact" className="hover:text-white transition-colors">contact</a>
+              </div>
               
-              {/* Button text */}
-              <span className="relative z-10">start remixing</span>
-              
-              {/* Decorative border */}
-              <div className="absolute inset-1 border border-white/10 pointer-events-none z-10" />
-              
-              {/* Animated border elements */}
-              <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
-              <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-transparent via-white/30 to-transparent"></div>
-              <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
-              <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-t from-transparent via-white/30 to-transparent"></div>
-            </Link>
+              {/* Glass Blur Button - Same style as feature cards */}
+              <Link 
+                to="/studio"
+                className="relative bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-2 font-medium hover:bg-white/20 transition-all duration-300 overflow-hidden group rounded-lg"
+              >
+                {/* Subtle gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+                
+                {/* Button text */}
+                <span className="relative z-10">start remixing</span>
+                
+                {/* Decorative border */}
+                <div className="absolute inset-1 border border-white/10 pointer-events-none z-10" />
+                
+                {/* Animated border elements */}
+                <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+                <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-transparent via-white/30 to-transparent"></div>
+                <div className="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-white/30 to-transparent"></div>
+                <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-t from-transparent via-white/30 to-transparent"></div>
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
@@ -360,7 +365,7 @@ const Index = () => {
           {/* Tagline Section */}
           <div 
             ref={taglineRef}
-            className="relative z-30 min-h-screen flex items-end justify-start p-8 md:p-16"
+            className="relative z-30 min-h-screen flex items-center justify-start p-8 md:p-16"
           >
             <div className="max-w-4xl text-left">
               <p className="text-4xl md:text-6xl font-bold text-white/90 tracking-wide uppercase leading-tight">
@@ -372,8 +377,8 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Features Section with Title - MINIMAL SPACING */}
-          <div className="relative z-30 py-8 px-8">
+          {/* Features Section with Title - INCREASED SPACING */}
+          <div className="relative z-30 pt-24 pb-12 px-8">
             <div className="max-w-7xl mx-auto w-full">
               <h2 className="text-6xl md:text-8xl font-bold text-white mb-4">Features</h2>
               <p className="text-xl text-white/70">Powerful tools for creative expression</p>
@@ -383,7 +388,7 @@ const Index = () => {
           {/* Features Card Stack Section - PINNED SCROLLING */}
           <div ref={featuresContainerRef} className="relative z-30 h-[120vh]">
             <div className="w-full h-screen flex items-start justify-between pt-24 px-16">
-              {/* Card Stack Container - Positioned TOP LEFT (slightly lower) */}
+              {/* Card Stack Container - Positioned TOP LEFT */}
               <div className="relative">
                 {featureData.map((feature, index) => (
                   <div
@@ -421,7 +426,7 @@ const Index = () => {
               {/* Enhanced Completion Text Container - GLASSMORPHIC WITH SHIMMER */}
               <div 
                 ref={completionTextRef} 
-                className="relative max-w-lg pt-16 bg-white/5 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl overflow-hidden"
+                className="relative max-w-lg pt-8 bg-white/5 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl overflow-hidden"
               >
                 {/* Glassmorphic background with gradient */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent"></div>
@@ -498,82 +503,68 @@ const Index = () => {
                   </a>
                 </div>
                 <div className="text-right">
-                  <p className="uppercase text-sm">Our Merch</p>
-                  {/* Placeholder for merch images */}
-                  <div className="flex justify-end space-x-2 mt-2">
-                    <div className="w-12 h-12 bg-neutral-800"></div>
-                    <div className="w-12 h-12 bg-neutral-800"></div>
-                    <div className="w-12 h-12 bg-neutral-800"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Get Started Section (formerly About) */}
-          <div ref={aboutRef} className="relative z-30 min-h-screen flex items-center justify-center px-8">
-            <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-6xl md:text-8xl font-bold text-white mb-12">
-                Get Started
-              </h2>
-              <p className="text-2xl text-white/90 leading-relaxed mb-8">
-                We curate sonic journeys that exist between night and dawn, reality and dream. 
-                Our platform blends ambient, techno, electro, and experimental elements to create 
-                deep, cinematic, and boundary-pushing soundscapes.
-              </p>
-              <p className="text-xl text-white/80 leading-relaxed mb-12">
-                Transform your creative process with AI-powered tools that understand the nuances 
-                of artistic expression and help you craft experiences that resonate on a deeper level.
-              </p>
-              <Link 
-                to="/studio"
-                className="inline-block bg-white text-black px-12 py-6 rounded-full text-xl font-bold hover:bg-black hover:text-white transition-all duration-300 transform hover:scale-105"
-              >
-                Start Remixing
-              </Link>
-            </div>
-          </div>
-
-          {/* Footer */}
-          <footer ref={footerRef} className="relative z-30 bg-black/80 backdrop-blur-sm py-16 px-8">
-            <div className="max-w-6xl mx-auto">
-              <div className="grid md:grid-cols-4 gap-8">
-                <div>
-                  <h3 className="text-white font-bold text-2xl mb-4">remix.</h3>
-                  <p className="text-white/70">
-                    Your world, reimagined with AI.
+                  <p className="max-w-xs ml-auto text-neutral-400">
+                    A curated selection of the best remixes from our community.
                   </p>
                 </div>
-                <div>
-                  <h4 className="text-white font-semibold mb-4">Product</h4>
-                  <ul className="space-y-2 text-white/70">
-                    <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
-                    <li><a href="#" className="hover:text-white transition-colors">Studio</a></li>
-                    <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="text-white font-semibold mb-4">Company</h4>
-                  <ul className="space-y-2 text-white/70">
-                    <li><a href="#" className="hover:text-white transition-colors">About</a></li>
-                    <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-                    <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="text-white font-semibold mb-4">Support</h4>
-                  <ul className="space-y-2 text-white/70">
-                    <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-                    <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
-                    <li><a href="#" className="hover:text-white transition-colors">Privacy</a></li>
-                  </ul>
-                </div>
               </div>
-              <div className="border-t border-white/20 mt-12 pt-8 text-center">
-                <p className="text-white/50">
-                  © 2024 remix. All rights reserved.
+            </div>
+          </div>
+
+          {/* New "Get Started" Section */}
+          <div ref={aboutRef} className="relative z-30 min-h-[70vh] text-white flex flex-col items-center justify-center text-center p-8">
+            <h2 className="text-6xl md:text-8xl font-bold mb-6">Ready to Remix?</h2>
+            <p className="text-xl text-white/70 max-w-2xl mb-12">
+              Unleash your creativity and start crafting your unique sound. Our intuitive tools and AI-powered features make it easy to produce professional-quality remixes.
+            </p>
+            <Link 
+              to="/studio"
+              className="relative bg-white/10 backdrop-blur-xl border border-white/20 text-white px-10 py-5 text-xl font-medium hover:bg-white/20 transition-all duration-300 overflow-hidden group rounded-2xl"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+              <span className="relative z-10">Start Remixing Now</span>
+              <div className="absolute inset-2 border border-white/10 pointer-events-none z-10 rounded-xl" />
+            </Link>
+          </div>
+
+          {/* Footer Section */}
+          <footer ref={footerRef} className="relative z-30 text-white/70 p-8 bg-black/20 backdrop-blur-xl">
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+              <div>
+                <h3 className="text-white font-bold text-2xl mb-4">remix.</h3>
+                <p className="text-white/70">
+                  Your world, reimagined with AI.
                 </p>
               </div>
+              <div>
+                <h4 className="text-white font-semibold mb-4">Product</h4>
+                <ul className="space-y-2 text-white/70">
+                  <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">Studio</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-white font-semibold mb-4">Company</h4>
+                <ul className="space-y-2 text-white/70">
+                  <li><a href="#" className="hover:text-white transition-colors">About</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-white font-semibold mb-4">Support</h4>
+                <ul className="space-y-2 text-white/70">
+                  <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">Privacy</a></li>
+                </ul>
+              </div>
+            </div>
+            <div className="border-t border-white/20 mt-12 pt-8 text-center">
+              <p className="text-white/50">
+                © 2024 remix. All rights reserved.
+              </p>
             </div>
           </footer>
         </div>
